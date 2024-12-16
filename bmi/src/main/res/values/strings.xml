@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">BMI</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="compute_imc">Compute IMC</string>
+    <string name="height">height</string>
+    <string name="weight">weight</string>
+    <string name="bmi">BMI</string>
+    <string name="body_mass_index">Body Mass Index</string>
+    <string name="compute_bmi">Compute BMI</string>
+    <string name="in_centimeters">in centimeters:</string>
+    <string name="in_kilograms">in kilograms</string>
+    <string name="underweight">underweight</string>
+    <string name="normal">Normal</string>
+    <string name="overweight">Overweight</string>
+    <string name="obesity">Obesity</string>
+</resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BMI</string>
+    <string name="ok">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="compute_imc">Calcular IMC</string>
+    <string name="height">estatura</string>
+    <string name="weight">peso</string>
+    <string name="bmi">IMC</string>
+    <string name="body_mass_index">Índice de Masa Corporal</string>
+    <string name="compute_bmi">Calcular IMC</string>
+    <string name="in_centimeters">en centimetros:</string>
+    <string name="in_kilograms">en kilogramos:</string>
+    <string name="underweight">Inferior al peso normal</string>
+    <string name="normal">Normal</string>
+    <string name="overweight">Sobrepeso</string>
+    <string name="obesity">Obesidad</string>
+</resources>
