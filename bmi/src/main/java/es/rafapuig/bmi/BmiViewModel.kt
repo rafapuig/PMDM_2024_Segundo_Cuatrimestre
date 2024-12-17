@@ -1,12 +1,21 @@
 package es.rafapuig.bmi
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import es.rafapuig.bmi.data.BmiState
+import es.rafapuig.bmi.data.Repository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BmiViewModel : ViewModel() {
 
-    enum class BmiState {UNDERWEIGHT, NORMAL, OVERWEIGHT, OBESITY}
+    val repository = Repository()
 
     var weight: Double = 0.0
     var height: Double = 0.0
@@ -14,18 +23,52 @@ class BmiViewModel : ViewModel() {
     //var bmi: Double = 0.0
 
     private val _bmi = MutableLiveData<Double>()
-    val bmi : LiveData<Double> = _bmi
+    val bmi: LiveData<Double> = _bmi
+
+    private val _computingBMI = MutableLiveData<Boolean>(false)
+    val computingBMI : LiveData<Boolean> = _computingBMI
+
 
 
     fun computeBMI() {
-        _bmi.value = weight / (height / 100 * height / 100)
+
+        _computingBMI.value = true
+
+        Log.i("RAFA", "${Thread.currentThread().name}: Lanzando corrutina")
+
+        CoroutineScope(Dispatchers.Default).launch {
+
+            val deferredResult = CoroutineScope(Dispatchers.Main).async {
+
+                Log.i(
+                    "RAFA",
+                    "${Thread.currentThread().name}: Llamando a computeBMI en el respositorio"
+                )
+
+                val result: Double = repository.computeBMI(weight, height)
+
+                Log.i("RAFA", "${Thread.currentThread().name}: Llamada realizada")
+
+                return@async result
+            }
+
+            Log.i("RAFA", "${Thread.currentThread().name}: Haciendo cosas mientras obtengo el resultado")
+            val result = deferredResult.await()
+
+            Log.i("RAFA", "${Thread.currentThread().name}: Resultado obtenido")
+
+            withContext(Dispatchers.Main) {
+                Log.i("RAFA", "${Thread.currentThread().name}: Actualizando BMI")
+                _computingBMI.value = false
+                _bmi.value = result
+            }
+        }
+
+        Log.i("RAFA", "${Thread.currentThread().name}:Corrutina lanzada con launch")
     }
 
     fun getResult(): BmiState {
-        if (bmi.value!! < 18.5) return BmiState.UNDERWEIGHT
-        if (bmi.value!! < 25) return BmiState.NORMAL
-        if (bmi.value!! < 30) return BmiState.OVERWEIGHT
-        return BmiState.OBESITY
+        return repository.getQualitativeBMI(bmi.value!!)
     }
 
 }

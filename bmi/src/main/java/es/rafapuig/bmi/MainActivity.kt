@@ -1,12 +1,14 @@
 package es.rafapuig.bmi
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Observer
+import androidx.databinding.DataBindingUtil
+import es.rafapuig.bmi.data.BmiState
 import es.rafapuig.bmi.databinding.ActivityMainBinding
 import java.util.Locale
 
@@ -21,8 +23,9 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
+        binding.setVariable(BR.mainViewModel, viewModel)
+        binding.lifecycleOwner = this
 
-        //setContentView(R.layout.activity_main)
         setContentView(binding.root)
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
@@ -43,6 +46,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun initObservers() {
         viewModel.bmi.observe(this) { updateUI() }
+
+        viewModel.computingBMI.observe(this) { isComputing ->
+            binding.progressBar.visibility = if (isComputing) View.VISIBLE else View.GONE
+        }
     }
 
 
@@ -64,12 +71,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun getBmiState(state: BmiViewModel.BmiState): Int {
+    fun getBmiState(state: BmiState): Int {
         return when (state) {
-            BmiViewModel.BmiState.UNDERWEIGHT -> R.string.underweight
-            BmiViewModel.BmiState.NORMAL -> R.string.normal
-            BmiViewModel.BmiState.OVERWEIGHT -> R.string.overweight
-            BmiViewModel.BmiState.OBESITY -> R.string.obesity
+            BmiState.UNDERWEIGHT -> R.string.underweight
+            BmiState.NORMAL -> R.string.normal
+            BmiState.OVERWEIGHT -> R.string.overweight
+            BmiState.OBESITY -> R.string.obesity
         }
     }
 }
