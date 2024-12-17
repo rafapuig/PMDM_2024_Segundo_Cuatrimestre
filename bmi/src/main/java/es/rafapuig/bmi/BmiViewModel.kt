@@ -13,7 +13,7 @@ class BmiViewModel : ViewModel() {
 
     //var bmi: Double = 0.0
 
-    val _bmi = MutableLiveData<Double>()
+    private val _bmi = MutableLiveData<Double>()
     val bmi : LiveData<Double> = _bmi
 
 
