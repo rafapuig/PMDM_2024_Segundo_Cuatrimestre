@@ -7,6 +7,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import es.rafapuig.bmi.BmiApplication
 import es.rafapuig.bmi.data.BmiState
 import es.rafapuig.bmi.domain.Repository
@@ -15,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 
 //class BmiViewModel(application: Application) : AndroidViewModel(application) {
 class BmiViewModel(
@@ -28,7 +34,9 @@ class BmiViewModel(
 
     //var bmi: Double = 0.0
 
-    private val _bmi = MutableLiveData<Double>()
+    val BMI_KEY = "BMI Saved Value"
+
+    private val _bmi = savedStateHandle.getLiveData<Double>(BMI_KEY)
     val bmi: LiveData<Double> = _bmi
 
     private val _computingBMI = MutableLiveData<Boolean>(false)
@@ -67,6 +75,7 @@ class BmiViewModel(
                 Log.i("RAFA", "${Thread.currentThread().name}: Actualizando BMI")
                 _computingBMI.value = false
                 _bmi.value = result
+                savedStateHandle[BMI_KEY] = _bmi.value
             }
         }
 
@@ -75,6 +84,21 @@ class BmiViewModel(
 
     fun getResult(): BmiState {
         return repository.getQualitativeBMI(bmi.value!!)
+    }
+
+    companion object {
+
+        val REPOSITORY_KEY = object : CreationExtras.Key<Repository> {}
+
+        val Factory = viewModelFactory {
+            initializer {
+                val savedStateHandle = createSavedStateHandle()
+                val application = (this[APPLICATION_KEY] as BmiApplication)
+                //val repository = application.appContainer.repository
+                val repository = this[REPOSITORY_KEY] ?: application.appContainer.repository
+                BmiViewModel(repository, savedStateHandle)
+            }
+        }
     }
 
 }

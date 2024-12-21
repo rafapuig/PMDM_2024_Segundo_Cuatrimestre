@@ -7,8 +7,15 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.SAVED_STATE_REGISTRY_OWNER_KEY
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.get
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import es.rafapuig.bmi.BR
 import es.rafapuig.bmi.BmiApplication
 import es.rafapuig.bmi.R
@@ -21,9 +28,33 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val viewModel: BmiViewModel by viewModels {
-        (application as BmiApplication).appContainer.BmiViewModelFactory
-    }
+    private val viewModel: BmiViewModel by viewModels(  // viewModels(
+        extrasProducer = {
+            MutableCreationExtras(defaultViewModelCreationExtras).apply {
+                set(
+                    BmiViewModel.REPOSITORY_KEY,
+                    (application as BmiApplication).appContainer.repository
+                )
+            }
+            /*MutableCreationExtras().apply {
+                set(
+                    BmiViewModel.REPOSITORY_KEY,
+                    (application as BmiApplication).appContainer.repository
+                )
+
+                set(
+                    ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY,
+                    application
+                )
+
+                set(SAVED_STATE_REGISTRY_OWNER_KEY, this@MainActivity)
+
+                set(VIEW_MODEL_STORE_OWNER_KEY, this@MainActivity)
+            }*/
+        },
+        factoryProducer = { BmiViewModel.Factory }
+    )
+
 
     //lateinit var viewModel: BmiViewModel
 
@@ -54,7 +85,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     private fun initListeners() {
         binding.computeButton.setOnClickListener { onComputeBmi() }
     }
@@ -64,8 +94,8 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.computingBMI.observe(this) { isComputing ->
             binding.progressBar.visibility = if (isComputing) View.VISIBLE else View.GONE
-            binding.resultadoNumber.visibility = if(isComputing) View.GONE else View.VISIBLE
-            binding.resultadoText.visibility = if(isComputing) View.GONE else View.VISIBLE
+            binding.resultadoNumber.visibility = if (isComputing) View.GONE else View.VISIBLE
+            binding.resultadoText.visibility = if (isComputing) View.GONE else View.VISIBLE
         }
     }
 

@@ -31,13 +31,6 @@ class AppContainer {
 
     }*/
 
-    val BmiViewModelFactory = viewModelFactory {
-        initializer {
-            val savedStateHandle = createSavedStateHandle()
-            val application = (this[APPLICATION_KEY] as BmiApplication)
-            val repository = application.appContainer.repository
-            BmiViewModel(repository, savedStateHandle)
-        }
-    }
+
 
 }
