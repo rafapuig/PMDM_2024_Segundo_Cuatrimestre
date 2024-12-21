@@ -160,8 +160,11 @@
                         android:saveEnabled="true"
                         android:textAlignment="center"
                         android:textSize="80sp"
-                        android:text='@{mainViewModel.bmi != null ? String.format(Locale.getDefault(), "%.2f", mainViewModel.bmi) : ""}'
+                        android:text='@{mainViewModel.bmi != null ?  @string/format_bmi(mainViewModel.bmi) : @string/empty }'
                         tools:text="18" />
+<!--                    android:text='@{mainViewModel.bmi != null ? String.format(Locale.getDefault(), "%.2f", mainViewModel.bmi) : ""}'-->
+<!--                    android:text="@{mainViewModel.bmi != null ? @string/format_bmi(mainViewModel.bmi) : @string.empty}"-->
+
 
                     <ProgressBar
                         android:id="@+id/progressBar"
