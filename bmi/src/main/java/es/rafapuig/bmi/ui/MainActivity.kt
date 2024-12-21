@@ -1,4 +1,4 @@
-package es.rafapuig.bmi
+package es.rafapuig.bmi.ui
 
 import android.os.Bundle
 import android.view.View
@@ -7,8 +7,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.databinding.DataBindingUtil
+import es.rafapuig.bmi.BR
+import es.rafapuig.bmi.R
 import es.rafapuig.bmi.data.BmiState
+import es.rafapuig.bmi.data.RepositoryImpl
 import es.rafapuig.bmi.databinding.ActivityMainBinding
 import java.util.Locale
 
@@ -33,6 +35,9 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // Esta linea CAGA todo la arquitectura
+        viewModel.repository = RepositoryImpl()
 
         initListeners()
         initObservers()
