@@ -97,7 +97,7 @@ class BmiViewModel(
                 Log.i("RAFA", "${currentThread().name}: Actualizando BMI")
                 _computingBMI.value = false
                 _bmi.value = result
-                _bmiState.value = getResult()
+                //_bmiState.value = getResult()
                 savedStateHandle[BMI_KEY] = _bmi.value
             }
         }
