@@ -14,4 +14,6 @@
     <string name="normal">Normal</string>
     <string name="overweight">Overweight</string>
     <string name="obesity">Obesity</string>
+    <string name="empty" translatable="false">Por determinar</string>
+
 </resources>

@@ -8,6 +8,7 @@
             name="mainViewModel"
             type="es.rafapuig.bmi.ui.BmiViewModel" />
         <import type="java.util.Locale"/>
+        <import type="es.rafapuig.bmi.ui.ConverterKt"/>
     </data>
 
     <LinearLayout
@@ -178,6 +179,7 @@
                         android:saveEnabled="true"
                         android:textAlignment="center"
                         android:textSize="40sp"
+                        android:text='@{ConverterKt.bmiStateToStringResource(mainViewModel.bmiState)}'
                         tools:text="Sobrepeso" />
                 </LinearLayout>
 

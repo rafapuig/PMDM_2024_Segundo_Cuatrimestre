@@ -8,19 +8,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.SAVED_STATE_REGISTRY_OWNER_KEY
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.createSavedStateHandle
-import androidx.lifecycle.get
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import es.rafapuig.bmi.BR
 import es.rafapuig.bmi.BmiApplication
 import es.rafapuig.bmi.R
 import es.rafapuig.bmi.data.BmiState
-import es.rafapuig.bmi.data.RepositoryImpl
 import es.rafapuig.bmi.databinding.ActivityMainBinding
 import java.util.Locale
 
@@ -28,35 +22,37 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val viewModel: BmiViewModel by viewModels(  // viewModels(
-        extrasProducer = {
-            MutableCreationExtras(defaultViewModelCreationExtras).apply {
-                set(
-                    BmiViewModel.REPOSITORY_KEY,
-                    (application as BmiApplication).appContainer.repository
-                )
-            }
-            /*MutableCreationExtras().apply {
-                set(
-                    BmiViewModel.REPOSITORY_KEY,
-                    (application as BmiApplication).appContainer.repository
-                )
+    private val creationExtras = {
+        MutableCreationExtras(defaultViewModelCreationExtras).apply {
+            set(
+                BmiViewModel.REPOSITORY_KEY,
+                (application as BmiApplication).appContainer.repository
+            )
+        }
+    }
 
-                set(
-                    ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY,
-                    application
-                )
+    val creationExtrasFull = {
+        MutableCreationExtras().apply {
+            set(
+                BmiViewModel.REPOSITORY_KEY,
+                (application as BmiApplication).appContainer.repository
+            )
 
-                set(SAVED_STATE_REGISTRY_OWNER_KEY, this@MainActivity)
+            set(
+                ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY,
+                application
+            )
 
-                set(VIEW_MODEL_STORE_OWNER_KEY, this@MainActivity)
-            }*/
-        },
-        factoryProducer = { BmiViewModel.Factory }
-    )
+            set(SAVED_STATE_REGISTRY_OWNER_KEY, this@MainActivity)
+
+            set(VIEW_MODEL_STORE_OWNER_KEY, this@MainActivity)
+        }
+    }
 
 
-    //lateinit var viewModel: BmiViewModel
+    //private val viewModel: BmiViewModel by viewModels(creationExtras) { BmiViewModel.Factory }
+
+    private lateinit var viewModel: BmiViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-        //viewModel = ViewModelProvider.create(this, (application as BmiApplication).appContainer.factory).get()
+        viewModel = ViewModelProvider.create(this, BmiViewModel.Factory, creationExtras())[BmiViewModel::class.java]
 
         binding.setVariable(BR.mainViewModel, viewModel)
         binding.lifecycleOwner = this
@@ -76,9 +72,6 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        // Esta linea CAGA todo la arquitectura
-        //viewModel.repository = RepositoryImpl()
 
         initListeners()
         initObservers()
@@ -113,12 +106,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUI() {
         with(binding) {
-            resultadoNumber.text = String.format(Locale.getDefault(), "%.2f", viewModel.bmi.value)
-            resultadoText.text = getString(getBmiState(viewModel.getResult()))
+            //resultadoNumber.text = String.format(Locale.getDefault(), "%.2f", viewModel.bmi.value)
+            //resultadoText.text = getString(getBmiState(viewModel.getResult()))
         }
     }
 
-    fun getBmiState(state: BmiState): Int {
+    private fun getBmiState(state: BmiState): Int {
         return when (state) {
             BmiState.UNDERWEIGHT -> R.string.underweight
             BmiState.NORMAL -> R.string.normal

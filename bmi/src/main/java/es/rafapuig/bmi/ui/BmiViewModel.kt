@@ -8,7 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -20,12 +22,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.Thread.currentThread
 
 
 //class BmiViewModel(application: Application) : AndroidViewModel(application) {
 class BmiViewModel(
-    private val repository: Repository,
-    private val savedStateHandle: SavedStateHandle) : ViewModel() {
+    val repository: Repository,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     //val repository  = (application as BmiApplication).appContainer.repository
 
@@ -40,7 +44,18 @@ class BmiViewModel(
     val bmi: LiveData<Double> = _bmi
 
     private val _computingBMI = MutableLiveData<Boolean>(false)
-    val computingBMI : LiveData<Boolean> = _computingBMI
+    val computingBMI: LiveData<Boolean> = _computingBMI
+
+    private val _bmiState = MutableLiveData<BmiState>()
+    val bmiState :LiveData<BmiState> = _bmiState
+
+    init {
+        viewModelScope.launch {
+            bmi.asFlow().collect {
+                _bmiState.value = bmi.value?.let { value -> repository.getQualitativeBMI(value) }
+            }
+        }
+    }
 
 
 
@@ -48,43 +63,56 @@ class BmiViewModel(
 
         _computingBMI.value = true
 
-        Log.i("RAFA", "${Thread.currentThread().name}: Lanzando corrutina")
+        Log.i("RAFA", "${currentThread().name}: Lanzando corrutina")
 
-        CoroutineScope(Dispatchers.Default).launch {
+        val deferredResult = viewModelScope.async(Dispatchers.IO) {
+            Log.i(
+                "RAFA",
+                "${currentThread().name}: Llamando a computeBMI en el respositorio"
+            )
 
-            val deferredResult = CoroutineScope(Dispatchers.Main).async {
+            //funcion suspendida solamente se puede llamar dentro de una corrutina
+            val result: Double = repository.computeBMI(weight, height)
 
-                Log.i(
-                    "RAFA",
-                    "${Thread.currentThread().name}: Llamando a computeBMI en el respositorio"
-                )
+            Log.i("RAFA", "${currentThread().name}: Llamada realizada")
 
-                val result: Double = repository.computeBMI(weight, height)
+            return@async result
+        }
 
-                Log.i("RAFA", "${Thread.currentThread().name}: Llamada realizada")
+        Log.i(
+            "RAFA",
+            "${currentThread().name}: Haciendo cosas mientras obtengo el resultado"
+        )
 
-                return@async result
-            }
-
-            Log.i("RAFA", "${Thread.currentThread().name}: Haciendo cosas mientras obtengo el resultado")
+        Log.i("RAFA", "${currentThread().name}: Lanzando corrutina para esperar el resultado")
+        viewModelScope.launch(Dispatchers.IO) {
+            // Await es un funcion suspendida, solo se puede llamar dentro de una corrutina
             val result = deferredResult.await()
 
-            Log.i("RAFA", "${Thread.currentThread().name}: Resultado obtenido")
+            withContext(Dispatchers.IO) {
+            Log.i("RAFA", "${currentThread().name}: Resultado obtenido")
+        }
 
             withContext(Dispatchers.Main) {
-                Log.i("RAFA", "${Thread.currentThread().name}: Actualizando BMI")
+                Log.i("RAFA", "${currentThread().name}: Actualizando BMI")
                 _computingBMI.value = false
                 _bmi.value = result
+                _bmiState.value = getResult()
                 savedStateHandle[BMI_KEY] = _bmi.value
             }
         }
 
-        Log.i("RAFA", "${Thread.currentThread().name}:Corrutina lanzada con launch")
+        Log.i("RAFA", "${currentThread().name}:Corrutina lanzada con launch")
     }
 
-    fun getResult(): BmiState {
+
+
+
+    private fun getResult(): BmiState {
         return repository.getQualitativeBMI(bmi.value!!)
     }
+
+
 
     companion object {
 
