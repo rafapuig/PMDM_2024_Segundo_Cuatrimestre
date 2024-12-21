@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import es.rafapuig.bmi.data.BmiState
 import es.rafapuig.bmi.data.Repository
 import kotlinx.coroutines.CoroutineScope
@@ -11,11 +12,15 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.lang.Thread.currentThread
 
 class BmiViewModel : ViewModel() {
 
-    val repository = Repository()
+    final val TAG = "BMI"
+
+    private val repository = Repository()
 
     var weight: Double = 0.0
     var height: Double = 0.0
@@ -26,49 +31,39 @@ class BmiViewModel : ViewModel() {
     val bmi: LiveData<Double> = _bmi
 
     private val _computingBMI = MutableLiveData<Boolean>(false)
-    val computingBMI : LiveData<Boolean> = _computingBMI
-
+    val computingBMI: LiveData<Boolean> = _computingBMI
 
 
     fun computeBMI() {
 
         _computingBMI.value = true
 
-        Log.i("RAFA", "${Thread.currentThread().name}: Lanzando corrutina")
+        Log.i(TAG, "${currentThread().name}: Llamando a computeBMI")
+        val deferredResult = repository.computeBMI(weight, height)
+        Log.i(TAG, "${currentThread().name}: Llamada realizada")
 
-        CoroutineScope(Dispatchers.Default).launch {
+        Log.i(TAG, "${currentThread().name}: Lanzando corrutina")
+        viewModelScope.launch {
+            Log.i(
+                TAG,
+                "${currentThread().name}: Haciendo otras cosas mientras obtengo el resultado"
+            )
 
-            val deferredResult = CoroutineScope(Dispatchers.Main).async {
-
-                Log.i(
-                    "RAFA",
-                    "${Thread.currentThread().name}: Llamando a computeBMI en el respositorio"
-                )
-
-                val result: Double = repository.computeBMI(weight, height)
-
-                Log.i("RAFA", "${Thread.currentThread().name}: Llamada realizada")
-
-                return@async result
-            }
-
-            Log.i("RAFA", "${Thread.currentThread().name}: Haciendo cosas mientras obtengo el resultado")
             val result = deferredResult.await()
-
-            Log.i("RAFA", "${Thread.currentThread().name}: Resultado obtenido")
+            Log.i(TAG, "${Thread.currentThread().name}: Resultado obtenido")
 
             withContext(Dispatchers.Main) {
                 Log.i("RAFA", "${Thread.currentThread().name}: Actualizando BMI")
-                _computingBMI.value = false
                 _bmi.value = result
+                _computingBMI.value = false
             }
         }
 
-        Log.i("RAFA", "${Thread.currentThread().name}:Corrutina lanzada con launch")
+        Log.i(TAG, "${currentThread().name}: Corrutina lanzada con launch")
     }
+
 
     fun getResult(): BmiState {
         return repository.getQualitativeBMI(bmi.value!!)
     }
-
 }

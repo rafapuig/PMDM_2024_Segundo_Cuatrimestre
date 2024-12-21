@@ -49,6 +49,8 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.computingBMI.observe(this) { isComputing ->
             binding.progressBar.visibility = if (isComputing) View.VISIBLE else View.GONE
+            binding.resultadoNumber.visibility = if(isComputing) View.GONE else View.VISIBLE
+            binding.resultadoText.visibility = if(isComputing) View.GONE else View.VISIBLE
         }
     }
 
