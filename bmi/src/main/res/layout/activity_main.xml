@@ -6,7 +6,7 @@
     <data>
         <variable
             name="mainViewModel"
-            type="es.rafapuig.bmi.BmiViewModel" />
+            type="es.rafapuig.bmi.ui.BmiViewModel" />
         <import type="java.util.Locale"/>
     </data>
 
@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:layout_margin="16dp"
         android:orientation="vertical"
-        tools:context=".MainActivity">
+        tools:context=".ui.MainActivity">
 
         <LinearLayout
             android:layout_width="match_parent"
