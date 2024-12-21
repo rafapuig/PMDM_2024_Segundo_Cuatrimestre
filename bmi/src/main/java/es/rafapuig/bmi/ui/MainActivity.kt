@@ -7,7 +7,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import es.rafapuig.bmi.BR
+import es.rafapuig.bmi.BmiApplication
 import es.rafapuig.bmi.R
 import es.rafapuig.bmi.data.BmiState
 import es.rafapuig.bmi.data.RepositoryImpl
@@ -18,13 +21,20 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val viewModel: BmiViewModel by viewModels()
+    private val viewModel: BmiViewModel by viewModels {
+        (application as BmiApplication).appContainer.BmiViewModelFactory
+    }
+
+    //lateinit var viewModel: BmiViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
+
+        //viewModel = ViewModelProvider.create(this, (application as BmiApplication).appContainer.factory).get()
+
         binding.setVariable(BR.mainViewModel, viewModel)
         binding.lifecycleOwner = this
 
@@ -37,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Esta linea CAGA todo la arquitectura
-        viewModel.repository = RepositoryImpl()
+        //viewModel.repository = RepositoryImpl()
 
         initListeners()
         initObservers()

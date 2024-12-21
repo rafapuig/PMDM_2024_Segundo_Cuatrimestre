@@ -7,7 +7,7 @@ import kotlinx.coroutines.delay
 class RepositoryImpl : Repository {
 
     override suspend fun computeBMI(weight: Double, height: Double) : Double {
-        delay(4_000)
+        delay(1_000)
         //return 12345.0
         return weight / (height / 100 * height / 100)
     }

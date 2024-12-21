@@ -1,21 +1,27 @@
-package es.rafapuig.bmi
+package es.rafapuig.bmi.ui
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import es.rafapuig.bmi.BmiApplication
 import es.rafapuig.bmi.data.BmiState
-import es.rafapuig.bmi.data.Repository
+import es.rafapuig.bmi.domain.Repository
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class BmiViewModel : ViewModel() {
+//class BmiViewModel(application: Application) : AndroidViewModel(application) {
+class BmiViewModel(
+    private val repository: Repository,
+    private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
-    val repository = Repository()
+    //val repository  = (application as BmiApplication).appContainer.repository
 
     var weight: Double = 0.0
     var height: Double = 0.0
