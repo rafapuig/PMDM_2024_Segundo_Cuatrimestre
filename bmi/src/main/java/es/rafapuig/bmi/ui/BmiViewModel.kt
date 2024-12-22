@@ -1,9 +1,6 @@
 package es.rafapuig.bmi.ui
 
-import android.app.Application
 import android.util.Log
-import androidx.databinding.BaseObservable
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -18,7 +15,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import es.rafapuig.bmi.BmiApplication
 import es.rafapuig.bmi.data.BmiState
 import es.rafapuig.bmi.domain.Repository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -48,18 +44,17 @@ class BmiViewModel(
     val computingBMI: LiveData<Boolean> = _computingBMI
 
     private val _bmiState = MutableLiveData<BmiState?>()
-    val bmiState :LiveData<BmiState?> = _bmiState
+    val bmiState: LiveData<BmiState?> = _bmiState
 
     init {
         viewModelScope.launch {
             bmi.asFlow().collect {
-                _bmiState.value = bmi.value?.run { 
-                    if(isFinite()) repository.getQualitativeBMI(this) else null
-                }
+                _bmiState.value = if (it.isFinite()) repository.getQualitativeBMI(it) else null
+                //if(it != savedStateHandle[BMI_KEY])
+                //savedStateHandle[BMI_KEY] = it
             }
         }
     }
-
 
 
     fun computeBMI() {
@@ -95,17 +90,13 @@ class BmiViewModel(
             val result = deferredResult.await()
 
             withContext(Dispatchers.IO) {
-            Log.i("RAFA", "${currentThread().name}: Resultado obtenido")
-        }
+                Log.i("RAFA", "${currentThread().name}: Resultado obtenido")
+            }
 
             withContext(Dispatchers.Main) {
                 Log.i("RAFA", "${currentThread().name}: Actualizando BMI")
                 _computingBMI.value = false
-                //if (!result.isNaN()) {
-                    _bmi.value = result
-                    //_bmiState.value = getResult()
-                    savedStateHandle[BMI_KEY] = bmi.value
-                //}
+                _bmi.value = result
             }
         }
 
@@ -113,12 +104,9 @@ class BmiViewModel(
     }
 
 
-
-
     /*private fun getResult(): BmiState {
         return repository.getQualitativeBMI(bmi.value!!)
     }*/
-
 
 
     companion object {
