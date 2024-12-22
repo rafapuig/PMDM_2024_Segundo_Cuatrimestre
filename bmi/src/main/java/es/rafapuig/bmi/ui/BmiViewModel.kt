@@ -25,7 +25,7 @@ import java.lang.Thread.currentThread
 //class BmiViewModel(application: Application) : AndroidViewModel(application) {
 class BmiViewModel(
     private val repository: Repository,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     //val repository  = (application as BmiApplication).appContainer.repository

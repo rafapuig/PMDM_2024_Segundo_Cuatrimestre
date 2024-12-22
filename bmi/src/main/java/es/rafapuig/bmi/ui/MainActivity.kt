@@ -12,18 +12,16 @@ import androidx.lifecycle.SAVED_STATE_REGISTRY_OWNER_KEY
 import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.MutableCreationExtras
-import es.rafapuig.bmi.BR
 import es.rafapuig.bmi.BmiApplication
 import es.rafapuig.bmi.R
 import es.rafapuig.bmi.data.BmiState
 import es.rafapuig.bmi.databinding.ActivityMainBinding
-import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val creationExtras = {
+    /*private val creationExtras = {
         MutableCreationExtras(defaultViewModelCreationExtras).apply {
             set(
                 BmiViewModel.REPOSITORY_KEY,
@@ -48,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
             set(VIEW_MODEL_STORE_OWNER_KEY, this@MainActivity)
         }
-    }
+    }*/
 
 
     //private val viewModel: BmiViewModel by viewModels(creationExtras) { BmiViewModel.Factory }
@@ -109,19 +107,11 @@ class MainActivity : AppCompatActivity() {
         //binding.resultadoText.text = getString(viewModel.getResult())
     }
 
-    private fun updateUI() {
+    /*private fun updateUI() {
         with(binding) {
             //resultadoNumber.text = String.format(Locale.getDefault(), "%.2f", viewModel.bmi.value)
             //resultadoText.text = getString(getBmiState(viewModel.getResult()))
         }
-    }
+    }*/
 
-    private fun getBmiState(state: BmiState): Int {
-        return when (state) {
-            BmiState.UNDERWEIGHT -> R.string.underweight
-            BmiState.NORMAL -> R.string.normal
-            BmiState.OVERWEIGHT -> R.string.overweight
-            BmiState.OBESITY -> R.string.obesity
-        }
-    }
 }
