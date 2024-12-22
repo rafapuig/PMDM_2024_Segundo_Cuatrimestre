@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.SAVED_STATE_REGISTRY_OWNER_KEY
 import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import androidx.lifecycle.ViewModelProvider
@@ -50,9 +51,9 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    //private val viewModel: BmiViewModel by viewModels(creationExtras) { BmiViewModel.Factory }
+    private val viewModel: BmiViewModel by viewModels(creationExtras) { BmiViewModel.Factory }
 
-    private lateinit var viewModel: BmiViewModel
+    //private lateinit var viewModel: BmiViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,10 +61,12 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-        viewModel = ViewModelProvider.create(this, BmiViewModel.Factory, creationExtras())[BmiViewModel::class.java]
+        //viewModel = ViewModelProvider.create(this, BmiViewModel.Factory, creationExtras())[BmiViewModel::class.java]
 
-        binding.setVariable(BR.mainViewModel, viewModel)
         binding.lifecycleOwner = this
+        //binding.setVariable(BR.mainViewModel, viewModel)
+        binding.mainViewModel = viewModel
+
 
         setContentView(binding.root)
 
@@ -83,18 +86,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initObservers() {
-        viewModel.bmi.observe(this) { updateUI() }
+        //viewModel.bmi.observe(this) { updateUI() }
 
         viewModel.computingBMI.observe(this) { isComputing ->
-            binding.progressBar.visibility = if (isComputing) View.VISIBLE else View.GONE
-            binding.resultadoNumber.visibility = if (isComputing) View.GONE else View.VISIBLE
-            binding.resultadoText.visibility = if (isComputing) View.GONE else View.VISIBLE
+            with(binding) {
+                //progressBar.isVisible = isComputing
+                resultadoNumber.visibility = if (isComputing) View.GONE else View.VISIBLE
+                resultadoText.isVisible = !isComputing
+            }
         }
     }
 
 
     private fun onComputeBmi() {
-
         viewModel.height = binding.estaturaEdit.text.toString().toDoubleOrNull() ?: 0.0
         viewModel.weight = binding.pesoEdit.text.toString().toDoubleOrNull() ?: 0.0
 

@@ -27,7 +27,7 @@ import java.lang.Thread.currentThread
 
 //class BmiViewModel(application: Application) : AndroidViewModel(application) {
 class BmiViewModel(
-    val repository: Repository,
+    private val repository: Repository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -43,7 +43,7 @@ class BmiViewModel(
     private val _bmi = savedStateHandle.getLiveData<Double>(BMI_KEY)
     val bmi: LiveData<Double> = _bmi
 
-    private val _computingBMI = MutableLiveData<Boolean>(false)
+    private val _computingBMI = MutableLiveData(false)
     val computingBMI: LiveData<Boolean> = _computingBMI
 
     private val _bmiState = MutableLiveData<BmiState>()
@@ -52,7 +52,7 @@ class BmiViewModel(
     init {
         viewModelScope.launch {
             bmi.asFlow().collect {
-                _bmiState.value = bmi.value?.let { value -> repository.getQualitativeBMI(value) }
+                _bmiState.value = bmi.value?.let { repository.getQualitativeBMI(it) }
             }
         }
     }
@@ -60,6 +60,8 @@ class BmiViewModel(
 
 
     fun computeBMI() {
+
+        //if(height == 0.0) return
 
         _computingBMI.value = true
 
@@ -96,9 +98,11 @@ class BmiViewModel(
             withContext(Dispatchers.Main) {
                 Log.i("RAFA", "${currentThread().name}: Actualizando BMI")
                 _computingBMI.value = false
-                _bmi.value = result
-                //_bmiState.value = getResult()
-                savedStateHandle[BMI_KEY] = _bmi.value
+                if (!result.isNaN()) {
+                    _bmi.value = result
+                    //_bmiState.value = getResult()
+                    savedStateHandle[BMI_KEY] = bmi.value
+                }
             }
         }
 
@@ -108,9 +112,9 @@ class BmiViewModel(
 
 
 
-    private fun getResult(): BmiState {
+    /*private fun getResult(): BmiState {
         return repository.getQualitativeBMI(bmi.value!!)
-    }
+    }*/
 
 
 

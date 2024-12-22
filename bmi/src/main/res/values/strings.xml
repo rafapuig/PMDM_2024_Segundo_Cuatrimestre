@@ -15,6 +15,6 @@
     <string name="overweight">Overweight</string>
     <string name="obesity">Obesity</string>
     <string name="empty" translatable="false"/>
-    <string name="format_bmi" translatable="false">"%1$.2f"</string>
+    <string name="format_bmi" translatable="false">"%1$.1f"</string>
 
 </resources>

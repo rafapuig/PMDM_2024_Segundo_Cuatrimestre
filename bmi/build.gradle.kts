@@ -2,7 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     //kotlin("kapt")
-    id("kotlin-kapt")
+    id("kotlin-kapt") //version "2.1.0"
+    //alias(libs.plugins.org.jetbrains.kotlin.kapt)
 }
 
 android {
