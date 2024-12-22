@@ -51,7 +51,8 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private val viewModel: BmiViewModel by viewModels(creationExtras) { BmiViewModel.Factory }
+    //private val viewModel: BmiViewModel by viewModels(creationExtras) { BmiViewModel.Factory }
+    private val viewModel: BmiViewModel by viewModels { BmiViewModel.Factory }
 
     //private lateinit var viewModel: BmiViewModel
 
