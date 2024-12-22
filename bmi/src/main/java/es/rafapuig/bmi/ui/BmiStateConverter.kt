@@ -32,6 +32,6 @@ fun Double?.toString(context: Context): String = context.getString(toStringResou
 
 @StringRes
 fun Double?.toStringResource(): Int =
-    this?.let { if(it.isFinite()) R.string.format_bmi else R.string.non_valid } ?: R.string.empty
+    this?.run { if(isFinite()) R.string.format_bmi else R.string.error } ?: R.string.empty
     //if (this?.isFinite() == true) R.string.format_bmi else R.string.empty
 

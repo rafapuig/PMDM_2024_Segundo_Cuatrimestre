@@ -168,7 +168,7 @@
                         tools:textColor="@color/red"
 
                         android:text="@{BmiStateConverterKt.toString(mainViewModel.bmi, context)}"
-                        android:textColor='@{resultadoNumber.text.equals(@string/non_valid) ? @color/red : @color/black}'
+                        android:textColor="@{resultadoNumber.text.equals(@string/error) ? @color/red : @color/black}"
 
                         android:textAlignment="center"
                         android:textSize="80sp"

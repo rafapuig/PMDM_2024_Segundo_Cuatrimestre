@@ -41,7 +41,7 @@ class BmiViewModel(
 
     val BMI_KEY = "BMI Saved Value"
 
-    private val _bmi = savedStateHandle.getLiveData<Double>(BMI_KEY) //,Double.NaN)
+    private val _bmi = savedStateHandle.getLiveData<Double>(BMI_KEY)//, Double.NaN)
     val bmi: LiveData<Double> = _bmi
 
     private val _computingBMI = MutableLiveData(false)
@@ -53,8 +53,8 @@ class BmiViewModel(
     init {
         viewModelScope.launch {
             bmi.asFlow().collect {
-                _bmiState.value = bmi.value?.let {
-                    if(it.isFinite()) repository.getQualitativeBMI(it) else null
+                _bmiState.value = bmi.value?.run { 
+                    if(isFinite()) repository.getQualitativeBMI(this) else null
                 }
             }
         }
