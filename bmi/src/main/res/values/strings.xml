@@ -16,5 +16,6 @@
     <string name="obesity">Obesity</string>
     <string name="empty" translatable="false"/>
     <string name="format_bmi" translatable="false">"%1$.1f"</string>
+    <string name="non_valid" translatable="false">Error</string>
 
 </resources>

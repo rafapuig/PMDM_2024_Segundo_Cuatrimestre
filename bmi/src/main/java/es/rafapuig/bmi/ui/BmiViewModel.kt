@@ -41,19 +41,21 @@ class BmiViewModel(
 
     val BMI_KEY = "BMI Saved Value"
 
-    private val _bmi = savedStateHandle.getLiveData<Double>(BMI_KEY)
+    private val _bmi = savedStateHandle.getLiveData<Double>(BMI_KEY) //,Double.NaN)
     val bmi: LiveData<Double> = _bmi
 
     private val _computingBMI = MutableLiveData(false)
     val computingBMI: LiveData<Boolean> = _computingBMI
 
-    private val _bmiState = MutableLiveData<BmiState>()
-    val bmiState :LiveData<BmiState> = _bmiState
+    private val _bmiState = MutableLiveData<BmiState?>()
+    val bmiState :LiveData<BmiState?> = _bmiState
 
     init {
         viewModelScope.launch {
             bmi.asFlow().collect {
-                _bmiState.value = bmi.value?.let { repository.getQualitativeBMI(it) }
+                _bmiState.value = bmi.value?.let {
+                    if(it.isFinite()) repository.getQualitativeBMI(it) else null
+                }
             }
         }
     }
@@ -99,11 +101,11 @@ class BmiViewModel(
             withContext(Dispatchers.Main) {
                 Log.i("RAFA", "${currentThread().name}: Actualizando BMI")
                 _computingBMI.value = false
-                if (!result.isNaN()) {
+                //if (!result.isNaN()) {
                     _bmi.value = result
                     //_bmiState.value = getResult()
                     savedStateHandle[BMI_KEY] = bmi.value
-                }
+                //}
             }
         }
 

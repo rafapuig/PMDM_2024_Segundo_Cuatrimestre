@@ -80,6 +80,7 @@
                             android:inputType="numberDecimal"
                             android:maxLines="1"
                             android:singleLine="true"
+                            android:textColor='@{mainViewModel.bmi.isNaN() || mainViewModel.bmi.isInfinite() ? @color/red : @color/black}'
                             android:textSize="40sp" />
 
                     </LinearLayout>
@@ -125,6 +126,7 @@
                             android:labelFor="@+id/weight_label"
                             android:maxLines="1"
                             android:singleLine="true"
+                            android:textColor='@{mainViewModel.bmi.isNaN()  ? @color/red : @color/black}'
                             android:textSize="40sp" />
 
                     </LinearLayout>
@@ -163,11 +165,18 @@
                         android:layout_weight="2"
                         android:gravity="center"
                         android:saveEnabled="true"
+                        tools:textColor="@color/red"
+
                         android:text="@{BmiStateConverterKt.toString(mainViewModel.bmi, context)}"
+                        android:textColor='@{resultadoNumber.text.equals(@string/non_valid) ? @color/red : @color/black}'
+
                         android:textAlignment="center"
                         android:textSize="80sp"
-
                         tools:text="18" />
+
+<!--                    android:textColor='@{mainViewModel.bmi.isInfinite() || mainViewModel.bmi.isNaN() ? @color/red : @color/black}'-->
+
+                    <!--                    android:text="@{context.getString(BmiStateConverterKt.toStringResource(mainViewModel.bmi),mainViewModel.bmi)}"-->
 
                     <!--                    android:text="@{context.getString(BmiStateConverterKt.toStringResource(mainViewModel.bmi),mainViewModel.bmi)}"-->
                     <!--                    android:text='@{mainViewModel.bmi != null ?  @string/format_bmi(mainViewModel.bmi) : @string/empty }'-->
@@ -206,6 +215,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="8dp"
             android:padding="16dp"
             android:text="@string/compute_bmi"
             android:textSize="24sp" />
