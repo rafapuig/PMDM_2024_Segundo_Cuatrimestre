@@ -58,6 +58,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:labelFor="@+id/height_label"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
@@ -74,6 +75,7 @@
                             android:textStyle="italic" />
 
                         <EditText
+                            android:autofillHints=""
                             android:id="@+id/estaturaEdit"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -102,7 +104,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/weight_label"
+                            android:labelFor="@+id/pesoEdit"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
@@ -119,11 +121,11 @@
                             android:textStyle="italic" />
 
                         <EditText
+                            android:autofillHints=""
                             android:id="@+id/pesoEdit"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="numberDecimal"
-                            android:labelFor="@+id/weight_label"
                             android:maxLines="1"
                             android:singleLine="true"
                             android:textColor='@{mainViewModel.bmi.isNaN()  ? @color/red : @color/black}'
