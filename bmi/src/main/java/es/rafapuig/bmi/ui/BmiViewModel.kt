@@ -2,6 +2,7 @@ package es.rafapuig.bmi.ui
 
 import android.app.Application
 import android.util.Log
+import androidx.databinding.BaseObservable
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
