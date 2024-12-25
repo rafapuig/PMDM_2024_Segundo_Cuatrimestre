@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     //id("com.google.devtools.ksp")
     alias(libs.plugins.google.devtools.ksp)
+    id("kotlin-kapt")
 }
 
 android {
@@ -10,6 +11,7 @@ android {
     compileSdk = 35
 
     buildFeatures {
+        dataBinding = true
         viewBinding = true
     }
 
@@ -54,4 +56,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.glide)
 }

@@ -1,5 +1,6 @@
 package com.example.booksroomdemo.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.booksroomdemo.BooksApplication
 import com.example.booksroomdemo.data.database.BookDao
-import com.example.booksroomdemo.data.database.entities.Book
+import com.example.booksroomdemo.data.database.BooksProvider
 import com.example.booksroomdemo.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,6 +49,11 @@ class MainActivity : AppCompatActivity() {
     private fun initListeners() {
         binding.loadButton.setOnClickListener { loadDataBase() }
         binding.removeButton.setOnClickListener { clearDatabase() }
+        binding.viewList.setOnClickListener { viewBooks() }
+    }
+
+    private fun viewBooks() {
+        startActivity(Intent(this, BooksListActivity::class.java))
     }
 
     private fun clearDatabase() {
@@ -60,18 +66,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadDataBase() {
 
-        val books = listOf(
-            Book(
-                id = 1,
-                title = "Collaborative Software Design: How to facilitate domain modeling decisions",
-                length = 416
-            )
-        )
-
-
-
         lifecycleScope.launch(Dispatchers.IO) {
-            bookDao.insertAll(books)
+            bookDao.insertAll(BooksProvider.books)
             /*val books = dao.getAll()
             withContext(Dispatchers.Main) {
                 binding.message.text = books.toString()
