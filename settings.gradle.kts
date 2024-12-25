@@ -23,3 +23,4 @@ rootProject.name = "PMDM_2024_Segundo_Cuatrimestre"
 include(":app")
 include(":coroutinedemo")
 include(":bmi")
+include(":booksroomdemo")
