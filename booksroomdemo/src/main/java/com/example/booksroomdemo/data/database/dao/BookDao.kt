@@ -1,12 +1,18 @@
-package com.example.booksroomdemo.data.database
+package com.example.booksroomdemo.data.database.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
+import com.example.booksroomdemo.data.database.dto.BookAndPublisher
+import com.example.booksroomdemo.data.database.dto.BookWithPublisher
+import com.example.booksroomdemo.data.database.dto.BookWithTags
 import com.example.booksroomdemo.data.database.entities.Book
+import com.example.booksroomdemo.data.database.entities.BookTagCrossRef
+import com.example.booksroomdemo.data.database.entities.Tag
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -38,4 +44,19 @@ interface BookDao {
     fun getAllObservable(): Flow<List<Book>>
 
     fun getBooksDistinctUntilChanged() = getAllObservable().distinctUntilChanged()
+
+
+    @Query("SELECT * FROM books INNER JOIN publishers ON books.publisherId = publishers.pId")
+    fun getBooksWithPublisher(): Flow<List<BookWithPublisher>>
+
+    @Transaction
+    @Query("SELECT * FROM books")
+    fun getBooksAndPublisher(): Flow<List<BookAndPublisher>>
+
+    @Transaction
+    @Query("SELECT * FROM books")
+    fun getBooksWithTags() : Flow<List<BookWithTags>>
+
+    @Insert
+    suspend fun addTag(bookTag : BookTagCrossRef)
 }

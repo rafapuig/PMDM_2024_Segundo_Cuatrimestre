@@ -32,6 +32,8 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-google-devtools-ksp = {id = "com.google.devtools.ksp", version = "2.1.0-1.0.29"}
+google-devtools-ksp = { id = "com.google.devtools.ksp", version = "2.1.0-1.0.29" }
 #org-jetbrains-kotlin-kapt = {id = "org.jetbrains.kotlin.kapt"}
+androidx-room = { id = "androidx.room", version.ref = "roomCommon" }
+
 

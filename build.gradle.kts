@@ -7,4 +7,11 @@ plugins {
     //id("com.google.devtools.ksp") version "2.1.0-1.0.29" apply false
     alias(libs.plugins.google.devtools.ksp) apply false
 
+
+
+    //Room Gradle Plugin
+    alias(libs.plugins.androidx.room) apply false
+    //id("androidx.room") version "$room_version" apply false
+
+
 }

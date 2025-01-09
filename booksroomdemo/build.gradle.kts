@@ -4,6 +4,7 @@ plugins {
     //id("com.google.devtools.ksp")
     alias(libs.plugins.google.devtools.ksp)
     id("kotlin-kapt")
+    alias(libs.plugins.androidx.room)
 }
 
 android {
@@ -14,6 +15,12 @@ android {
         dataBinding = true
         viewBinding = true
     }
+
+    room {
+        schemaDirectory("$projectDir/schema")
+    }
+
+
 
     defaultConfig {
         applicationId = "com.example.booksroomdemo"

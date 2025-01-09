@@ -8,7 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.booksroomdemo.BooksApplication
-import com.example.booksroomdemo.data.database.BookDao
+import com.example.booksroomdemo.data.database.dao.BookDao
 import com.example.booksroomdemo.databinding.ActivityBooksListBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -1,6 +1,5 @@
 package com.example.booksroomdemo.ui
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.booksroomdemo.data.database.entities.Book
