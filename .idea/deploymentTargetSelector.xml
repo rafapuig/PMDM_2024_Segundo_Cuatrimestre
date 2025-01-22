@@ -5,13 +5,13 @@
       <SelectionState runConfigName="bmi">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="app">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="coroutinedemo">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="booksroomdemo">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="movieapp">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
