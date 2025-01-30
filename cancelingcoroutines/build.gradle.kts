@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "es.rafapuig.coroutinedemo"
+    namespace = "com.example.cancelingcoroutines"
     compileSdk = 35
 
     buildFeatures {
@@ -12,7 +12,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "es.rafapuig.coroutinedemo"
+        applicationId = "com.example.cancelingcoroutines"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

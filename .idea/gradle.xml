@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/APIServicesDemo" />
             <option value="$PROJECT_DIR$/bmi" />
             <option value="$PROJECT_DIR$/booksroomdemo" />
+            <option value="$PROJECT_DIR$/cancelingcoroutines" />
             <option value="$PROJECT_DIR$/coroutinedemo" />
             <option value="$PROJECT_DIR$/movieapp" />
           </set>
