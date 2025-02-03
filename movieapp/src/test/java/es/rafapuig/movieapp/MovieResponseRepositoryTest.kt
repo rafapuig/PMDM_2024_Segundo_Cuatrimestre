@@ -1,9 +1,9 @@
 package es.rafapuig.movieapp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import es.rafapuig.movieapp.data.MovieRepository
+import es.rafapuig.movieapp.data.MovieRepositoryImpl
 import es.rafapuig.movieapp.data.network.api.MovieService
-import es.rafapuig.movieapp.data.network.model.Movie
+import es.rafapuig.movieapp.data.network.model.MovieResponse
 import es.rafapuig.movieapp.data.network.model.MoviesResponse
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -12,13 +12,13 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 
-class MovieRepositoryTest {
+class MovieResponseRepositoryTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Test
     fun fetchMovies() {
-        val movies = listOf(Movie(id = 3), Movie(id = 4))
+        val movies = listOf(MovieResponse(id = 3), MovieResponse(id = 4))
         val response = MoviesResponse(1, movies)
 
         val movieService: MovieService = mock {
@@ -26,7 +26,7 @@ class MovieRepositoryTest {
                     response
         }
 
-        val movieRepository = MovieRepository(movieService)
+        val movieRepository = MovieRepositoryImpl(movieService)
 
         runTest {
             val movies2 = movieRepository.fetchMovies()

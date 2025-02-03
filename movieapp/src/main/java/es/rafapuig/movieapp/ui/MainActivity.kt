@@ -1,13 +1,21 @@
 package es.rafapuig.movieapp.ui
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.snackbar.Snackbar
 import es.rafapuig.movieapp.databinding.ActivityMainBinding
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 
     private val movieAdapter by lazy { MovieAdapter() }
 
-    val viewModel : MovieViewModel by viewModels { MovieViewModel.Factory }
+    private val viewModel : MovieViewModel by viewModels { MovieViewModel.Factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,12 +44,33 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.fetchMovies()
 
-        viewModel.movies.observe(this) { movies ->
+        /*viewModel.movies.observe(this) { movies ->
             movieAdapter.addMovies(movies)
         }
 
         viewModel.loading.observe(this) { loading ->
             binding.progressBar.isVisible = loading
+        }*/
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.movies.collect { movies ->
+                        movieAdapter.addMovies(movies)
+                    }
+                }
+                launch {
+                    viewModel.error.collect { error ->
+                        if(error.isNotEmpty())
+                            Snackbar.make(binding.movieList, error, Snackbar.LENGTH_LONG).show()
+                    }
+                }
+                launch {
+                    viewModel.loading.collect { loading ->
+                        binding.progressBar.isVisible = loading
+                    }
+                }
+            }
         }
     }
 }

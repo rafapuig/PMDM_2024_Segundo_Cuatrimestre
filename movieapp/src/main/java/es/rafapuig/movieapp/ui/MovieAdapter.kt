@@ -1,15 +1,14 @@
 package es.rafapuig.movieapp.ui
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import es.rafapuig.movieapp.R
-import es.rafapuig.movieapp.data.network.model.Movie
+import es.rafapuig.movieapp.data.network.model.MovieResponse
 import es.rafapuig.movieapp.databinding.ViewMovieItemBinding
+import es.rafapuig.movieapp.domain.model.Movie
 
 class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 

@@ -1,11 +1,15 @@
 package es.rafapuig.movieapp
 
 import android.app.Application
+import android.content.Context
+import androidx.room.Room
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import es.rafapuig.movieapp.data.MovieRepository
+import es.rafapuig.movieapp.data.MovieRepositoryImpl
+import es.rafapuig.movieapp.data.local.MoviesDatabase
 import es.rafapuig.movieapp.data.network.RequestTokenInterceptor
 import es.rafapuig.movieapp.data.network.api.MovieService
+import es.rafapuig.movieapp.domain.MovieRepository
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -18,7 +22,7 @@ class MovieApplication : Application() {
 
     lateinit var movieRepository: MovieRepository
 
-    private fun getMovieService(token:String): MovieService {
+    private fun getMovieService(token: String): MovieService {
 
         val client = OkHttpClient.Builder()
             .addInterceptor(RequestTokenInterceptor(token))
@@ -37,11 +41,17 @@ class MovieApplication : Application() {
         return retrofit.create(MovieService::class.java)
     }
 
+    private fun getDatabase(context: Context) =
+        Room.databaseBuilder(context, MoviesDatabase::class.java, "movies.db").build()
+
+
     override fun onCreate() {
         super.onCreate()
 
+        val db = getDatabase(applicationContext)
+
         val service = getMovieService(API_TOKEN)
 
-        movieRepository = MovieRepository(service)
+        movieRepository = MovieRepositoryImpl(service, db.movieDao())
     }
 }

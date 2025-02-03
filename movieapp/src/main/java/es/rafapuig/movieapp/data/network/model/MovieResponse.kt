@@ -2,7 +2,7 @@ package es.rafapuig.movieapp.data.network.model
 
 import com.squareup.moshi.Json
 
-data class Movie(
+data class MovieResponse(
     val adult: Boolean = false,
     @Json(name = "backdrop_path") val backdropPath: String = "",
     val id: Int = 0,
