@@ -3,8 +3,10 @@ package es.rafapuig.apiservicesdemo.api
 import es.rafapuig.apiservicesdemo.API_TOKEN
 import es.rafapuig.apiservicesdemo.model.MoviesResponse
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Query
 
 
 interface MovieService {
@@ -13,17 +15,26 @@ interface MovieService {
         "Authorization: Bearer $API_TOKEN"
     )
     @GET("movie/now_playing")
-    fun getMovies(): Call<MoviesResponse>
+    fun getMoviesWithHeaders(): Call<MoviesResponse>
 
 
     @GET("movie/now_playing")
-    fun getMovies2(): Call<MoviesResponse>
+    fun getNowPlayingMovies(
+        @Query("language") language: String = "es-ES",
+        @Query("page") page: Int = 1
+    ): Call<MoviesResponse>
 
 
     @GET("movie/now_playing")
-    suspend fun getMoviesAsyncResponse(): retrofit2.Response<MoviesResponse>
+    suspend fun getNowPlayingMoviesAsyncResponse(
+        @Query("language") language: String = "es-ES",
+        @Query("page") page: Int = 1
+    ): Response<MoviesResponse>
 
 
     @GET("movie/now_playing")
-    suspend fun getMoviesAsync(): MoviesResponse
+    suspend fun getNowPlayingMoviesAsync(
+        @Query("language") language: String = "es-ES",
+        @Query("page") page: Int = 1
+    ): MoviesResponse
 }

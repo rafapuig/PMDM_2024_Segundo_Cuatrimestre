@@ -6,29 +6,38 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import es.rafapuig.apiservicesdemo.api.MovieService
 import es.rafapuig.apiservicesdemo.model.Movie
 import es.rafapuig.apiservicesdemo.model.MoviesResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import kotlin.coroutines.CoroutineContext
 
 const val API_TOKEN =
     "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4YjYwYmIwMWM5M2FlZDZjNjQzYTlmNThkNWVmNTAzMCIsIm5iZiI6MTczNzU1MDc2Ni45NjcsInN1YiI6IjY3OTBlYmFlMmQ2MWMzM2U2M2RmZmI4OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.FetknARzdQhKbAQXWyxiKAW4tH33zyzZNUIxUAQzbzM"
 
 fun main() {
-    //ejemplo1()
-    //ejemplo2()
-    //ejemplo3()
-    //ejemplo4()
-    //ejemplo5()
+    //ejemploOkHttp()
+    //ejemploMoshi()
+    //ejemploRetrofit()
+    //ejemploRetrofit2()
+    //ejemploRetrofitCoroutines()
     ejemplo6()
 
     println("Fin de la demo")
 }
 
-fun ejemplo1(): String {
+fun ejemploOkHttp() {
+    println(getMoviesJSON())
+}
+
+fun getMoviesJSON(): String {
 
     val client = OkHttpClient()
 
@@ -44,16 +53,14 @@ fun ejemplo1(): String {
 
     val json = response.body?.string() ?: ""
 
-    println(json)
-
     return json
 }
 
 
 @OptIn(ExperimentalStdlibApi::class)
-fun ejemplo2() {
+fun ejemploMoshi() {
 
-    val json = ejemplo1()
+    val json = getMoviesJSON()
 
     val moshi = Moshi.Builder()
         .addLast(KotlinJsonAdapterFactory())
@@ -63,13 +70,18 @@ fun ejemplo2() {
 
     val moviesResponse = jsonAdapter.fromJson(json)
 
+    printMoviesTitle(moviesResponse)
+}
+
+
+private fun printMoviesTitle(moviesResponse: MoviesResponse?) {
     moviesResponse?.results?.forEach {
         println(it.title)
     }
 }
 
 
-fun ejemplo3() {
+fun ejemploRetrofit() {
 
     val moshi = Moshi.Builder()
         .addLast(KotlinJsonAdapterFactory())
@@ -82,7 +94,7 @@ fun ejemplo3() {
 
     val movieService = retrofit.create(MovieService::class.java)
 
-    val call = movieService.getMovies()
+    val call = movieService.getMoviesWithHeaders()
 
     val response = call.execute()
 
@@ -94,14 +106,14 @@ fun ejemplo3() {
 }
 
 
-class RequestTokenInterceptor : Interceptor {
+class RequestTokenInterceptor(private val token: String) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
 
         val request = chain.request()
         val newRequest = request.newBuilder()
             .addHeader("accept", "application/json")
-            .addHeader("Authorization", "Bearer $API_TOKEN")
+            .addHeader("Authorization", "Bearer $token")
             .build()
 
         return chain.proceed(newRequest)
@@ -109,10 +121,18 @@ class RequestTokenInterceptor : Interceptor {
 }
 
 
-fun ejemplo4() {
+fun ejemploRetrofitInterceptor() {
 
     val client = OkHttpClient.Builder()
-        .addInterceptor(RequestTokenInterceptor())
+        .addInterceptor {
+            it.proceed(
+                it.request().newBuilder()
+                    .addHeader("accept", "application/json")
+                    .addHeader("Authorization", "Bearer $API_TOKEN")
+                    .build()
+            )
+        }
+        //.addInterceptor(RequestTokenInterceptor(API_TOKEN))
         .build()
 
     val moshi = Moshi.Builder()
@@ -127,7 +147,7 @@ fun ejemplo4() {
 
     val movieService = retrofit.create(MovieService::class.java)
 
-    val call = movieService.getMovies2()
+    val call = movieService.getNowPlayingMovies()
 
     val response = call.execute()
 
@@ -142,7 +162,7 @@ fun ejemplo4() {
 fun getMovieService(): MovieService {
 
     val client = OkHttpClient.Builder()
-        .addInterceptor(RequestTokenInterceptor())
+        .addInterceptor(RequestTokenInterceptor(API_TOKEN))
         .build()
 
     val moshi = Moshi.Builder()
@@ -159,12 +179,12 @@ fun getMovieService(): MovieService {
 }
 
 
-fun ejemplo5() {
+fun ejemploRetrofitCoroutines() {
 
     val service = getMovieService()
 
     runBlocking {
-        val moviesResponse = service.getMoviesAsyncResponse()
+        val moviesResponse = service.getNowPlayingMoviesAsyncResponse()
 
         if (moviesResponse.isSuccessful) {
 
@@ -179,19 +199,51 @@ fun ejemplo5() {
 }
 
 
-fun getMovies(): List<Movie> {
+fun getMovies(context: CoroutineContext): List<Movie> {
 
     val service = getMovieService()
 
-    return runBlocking {
-        val moviesResponse = service.getMoviesAsync()
+    return runBlocking(context) {
+        val moviesResponse = service.getNowPlayingMoviesAsync()
         return@runBlocking moviesResponse.results
     }
+
 }
 
 fun ejemplo6() {
-    getMovies().forEach {
+    val scope = CoroutineScope(Dispatchers.IO)
+
+    getMovies(scope.coroutineContext).forEach {
         println(it.title)
+    }
+    scope.cancel()
+
+}
+
+fun ejemploRetrofitCoroutines1() {
+    val service = getMovieService();
+
+    runBlocking {
+
+        val response = service.getNowPlayingMoviesAsyncResponse(page = 1)
+        if (response.isSuccessful) {
+            printMoviesTitle(response.body())
+        }  else {
+            println(response.errorBody()?.string())
+        }
+    }
+}
+
+fun ejemploRetrofitCoroutines2() {
+    val service = getMovieService();
+
+    runBlocking {
+        try {
+            val moviesResponse = service.getNowPlayingMoviesAsync(page = 1)
+            printMoviesTitle(moviesResponse)
+        } catch (ex: HttpException) {
+            println(ex.message())
+        }
     }
 }
 
