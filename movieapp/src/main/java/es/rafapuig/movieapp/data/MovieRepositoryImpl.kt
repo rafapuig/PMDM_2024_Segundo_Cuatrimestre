@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flowOn
 
 class MovieRepositoryImpl(
     private val movieService: MovieService,
-    val movieDao: MovieDao) : MovieRepository {
+    private val movieDao: MovieDao) : MovieRepository {
 
     override suspend fun fetchMovies(): List<Movie> {
         val moviesResponse = movieService.getMovies()
