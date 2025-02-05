@@ -30,14 +30,21 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
 
     fun addMovies(movieList: List<Movie>) {
+        val oldSize = itemCount
+        movies.clear()
+        notifyItemRangeRemoved(0, oldSize)
+
         movies.addAll(movieList)
         notifyItemRangeInserted(0, movieList.size)
     }
 
 
-    class MovieViewHolder(private val binding: ViewMovieItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class MovieViewHolder(private val binding: ViewMovieItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        private val imageUrl = "https://image.tmdb.org/t/p/w185/"
+        private val imageWidth = 185
+
+        private val imageUrl = "https://image.tmdb.org/t/p/w$imageWidth/"
 
         /*private val titleText: TextView by lazy {
             //itemView.findViewById(R.id.movie_title)
@@ -48,7 +55,6 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
             itemView.findViewById(R.id.movie_poster)
         }
 
-
         fun bind(movie: Movie) {
             binding.movieTitle.text = movie.title
 
@@ -56,7 +62,9 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
                 .load("$imageUrl${movie.posterPath}")
                 .placeholder(R.mipmap.ic_launcher)
                 .fitCenter()
+                //.circleCrop()
                 .into(poster)
+
         }
     }
 }

@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import es.rafapuig.movieapp.data.MovieRepositoryImpl
 import es.rafapuig.movieapp.data.network.api.MovieService
 import es.rafapuig.movieapp.data.network.model.MovieResponse
-import es.rafapuig.movieapp.data.network.model.MoviesResponse
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test

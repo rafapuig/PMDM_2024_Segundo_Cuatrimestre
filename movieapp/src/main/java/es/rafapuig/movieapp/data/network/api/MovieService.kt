@@ -9,7 +9,8 @@ interface MovieService {
     @GET("movie/now_playing")
     suspend fun getMovies(
         @Query("language") language: String = "es-ES",
-        @Query("page") page: Int = 1
+        @Query("page") page: Int = 1,
+        @Query("region") region: String = "ES"
     ): MoviesResponse
 
 }

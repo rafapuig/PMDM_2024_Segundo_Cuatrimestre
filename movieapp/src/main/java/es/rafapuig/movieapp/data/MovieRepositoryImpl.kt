@@ -13,7 +13,8 @@ import kotlinx.coroutines.flow.flowOn
 
 class MovieRepositoryImpl(
     private val movieService: MovieService,
-    private val movieDao: MovieDao) : MovieRepository {
+    private val movieDao: MovieDao
+) : MovieRepository {
 
     override suspend fun fetchMovies(): List<Movie> {
         val moviesResponse = movieService.getMovies()
@@ -22,12 +23,25 @@ class MovieRepositoryImpl(
 
     override fun fetchMoviesFlow(): Flow<List<Movie>> {
         return flow {
-            val movieEntities = movieService.getMovies().results.map { it.toDatabase() }
-            movieDao.clear()
-            movieDao.insertAll(movieEntities)
-            val movies = movieDao.getNowPlayingMovies().map { it.toDomain() }
+            // Mandamos las peliculas que tenemos en cache primero
+            var cachedMovies = movieDao.getNowPlayingMovies().map { it.toDomain() }
+            emit(cachedMovies)
+
+            var page: Int = 1
+            var totalPages: Int = 0
+            //Ahora recuperamos las películas del API
+            do {
+                val moviesResponse = movieService.getMovies(page = page)
+                totalPages = moviesResponse.totalPages
+                // Las insertamos en la BD cache
+                movieDao.insertAll(moviesResponse.results.map { it.toDatabase() })
+            } while (page++ < totalPages)
+
+
+            val updatedMovies = movieDao.getNowPlayingMovies().map { it.toDomain() }
             //emit(movieService.getMovies().results.map { it.toDomain() })
-            emit(movies)
+            // Y volvemos a emitir
+            emit(updatedMovies)
         }.flowOn(Dispatchers.IO)
     }
 }

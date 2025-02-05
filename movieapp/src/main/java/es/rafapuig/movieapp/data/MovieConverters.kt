@@ -7,17 +7,17 @@ import es.rafapuig.movieapp.domain.model.Movie
 fun MovieEntity.toDomain() = Movie(
     id,
     title,
-    posterPath
+    posterPath.orEmpty()
 )
 
 fun MovieResponse.toDatabase() = MovieEntity(
     id,
     title,
-    posterPath
+    posterPath.orEmpty()
 )
 
 fun MovieResponse.toDomain() = Movie(
     id,
     title,
-    posterPath
+    posterPath.orEmpty()
 )

@@ -7,8 +7,10 @@
 
     <ImageView
         android:id="@+id/movie_poster"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="240dp"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
         android:contentDescription="Movie Poster"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
