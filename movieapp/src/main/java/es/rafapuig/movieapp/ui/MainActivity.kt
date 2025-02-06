@@ -56,7 +56,8 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     viewModel.movies.collect { movies ->
-                        movieAdapter.addMovies(movies)
+                        //movieAdapter.addMovies(movies)
+                        movieAdapter.submitList(movies)
                     }
                 }
                 launch {
