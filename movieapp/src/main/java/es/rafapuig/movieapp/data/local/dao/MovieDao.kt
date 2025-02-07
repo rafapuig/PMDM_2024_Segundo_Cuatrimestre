@@ -1,5 +1,6 @@
 package es.rafapuig.movieapp.data.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -12,6 +13,9 @@ interface MovieDao {
 
     @Query("SELECT * FROM movies")
     suspend fun getNowPlayingMovies() : List<MovieEntity>
+
+    @Query("SELECT * FROM movies")
+    fun getNowPlayingMoviesPaged() : PagingSource<Int, MovieEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(movies:List<MovieEntity>)
