@@ -1,5 +1,6 @@
 package es.rafapuig.movieapp.data
 
+import androidx.paging.PagingData
 import es.rafapuig.movieapp.data.local.dao.MovieDao
 import es.rafapuig.movieapp.data.network.api.MovieService
 import es.rafapuig.movieapp.data.network.model.MovieResponse
@@ -43,5 +44,9 @@ class MovieRepositoryImpl(
             // Y volvemos a emitir
             emit(updatedMovies)
         }.flowOn(Dispatchers.IO)
+    }
+
+    override fun fetchMoviesPagingFlow(): Flow<PagingData<Movie>> {
+        TODO("Not yet implemented")
     }
 }

@@ -28,12 +28,16 @@ class MovieViewHolder(private val binding: ViewMovieItemBinding) : ViewHolder(bi
     fun bindTo(movie: Movie) {
         binding.movieTitle.text = movie.title
 
-        Glide.with(itemView.context)
-            .load("$imageUrl${movie.posterPath}")
-            .placeholder(R.mipmap.ic_launcher)
-            .fitCenter()
-            //.circleCrop()
-            .into(poster)
+        binding.moviePoster.setImageResource(R.mipmap.ic_launcher)
+
+        if (movie.posterPath.isNotBlank()) {
+            Glide.with(itemView.context)
+                .load("$imageUrl${movie.posterPath}")
+                .placeholder(R.mipmap.ic_launcher)
+                .fitCenter()
+                //.circleCrop()
+                .into(poster)
+        }
 
     }
 

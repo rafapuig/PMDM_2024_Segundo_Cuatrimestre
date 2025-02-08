@@ -5,13 +5,17 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import es.rafapuig.movieapp.MovieApplication
 import es.rafapuig.movieapp.domain.MovieRepository
 import es.rafapuig.movieapp.domain.model.Movie
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -57,6 +61,11 @@ class MovieViewModel(private val movieRepository: MovieRepository) : ViewModel()
             //movieRepository.fetchMoviesFlow().asLiveData()
             //_loading.value = false
         }
+    }
+
+
+    fun fetchMoviesPaged(): Flow<PagingData<Movie>> {
+        return movieRepository.fetchMoviesPagingFlow().cachedIn(viewModelScope)
     }
 
 

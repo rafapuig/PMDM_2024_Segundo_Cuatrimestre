@@ -14,7 +14,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
 import es.rafapuig.movieapp.databinding.ActivityMainBinding
+import es.rafapuig.movieapp.domain.model.Movie
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -23,9 +25,17 @@ class MainActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
-    private val movieAdapter by lazy { MovieAdapter() }
+    //private val movieAdapter by lazy { MovieListAdapter() }
 
-    private val viewModel : MovieViewModel by viewModels { MovieViewModel.Factory }
+    private val movieAdapter by lazy { MoviePagingDataAdapter { onMovieItemClick(it) } }
+
+    private val viewModel: MovieViewModel by viewModels { MovieViewModel.Factory }
+
+    fun onMovieItemClick(movie: Movie) {
+        Snackbar
+            .make(binding.root, "Clicked on ${movie.title}!!", Snackbar.LENGTH_SHORT)
+            .show()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +52,8 @@ class MainActivity : AppCompatActivity() {
 
         binding.movieList.adapter = movieAdapter
 
-        viewModel.fetchMovies()
+        //viewModel.fetchMovies()
+        //viewModel.fetchMoviesPaged()
 
         /*viewModel.movies.observe(this) { movies ->
             movieAdapter.addMovies(movies)
@@ -52,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             binding.progressBar.isVisible = loading
         }*/
 
-        lifecycleScope.launch {
+        /*lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     viewModel.movies.collect { movies ->
@@ -72,6 +83,14 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }*/
+
+
+        lifecycleScope.launch {
+            viewModel.fetchMoviesPaged().collectLatest {
+                movieAdapter.submitData(it)
+            }
         }
+
     }
 }
