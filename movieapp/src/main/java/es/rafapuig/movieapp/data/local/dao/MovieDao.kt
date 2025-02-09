@@ -6,7 +6,10 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
+import es.rafapuig.movieapp.data.local.entity.GenreEntity
 import es.rafapuig.movieapp.data.local.entity.MovieEntity
+import es.rafapuig.movieapp.data.local.entity.MovieGenreCrossRef
+import es.rafapuig.movieapp.data.local.entity.MovieWithGenreDetails
 
 @Dao
 interface MovieDao {
@@ -15,10 +18,16 @@ interface MovieDao {
     suspend fun getNowPlayingMovies() : List<MovieEntity>
 
     @Query("SELECT * FROM movies")
-    fun getNowPlayingMoviesPaged() : PagingSource<Int, MovieEntity>
+    fun getNowPlayingMoviesPaged() : PagingSource<Int, MovieWithGenreDetails>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(movies:List<MovieEntity>)
+
+    @Upsert
+    suspend fun upsertMovieWithGenreIds(movie:MovieEntity, genres: List<MovieGenreCrossRef>)
+
+    @Upsert
+    suspend fun upsertMovieWithGenres(movie:MovieEntity, genres: List<GenreEntity>)
 
     @Query("DELETE FROM movies")
     suspend fun clearAll()

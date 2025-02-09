@@ -11,5 +11,6 @@ object MovieDatabaseProvider {
     fun getDatabase(context: Context) =
         Room
             .databaseBuilder(context, MoviesDatabase::class.java, DB_FILENAME)
+            .fallbackToDestructiveMigration()
             .build()
 }

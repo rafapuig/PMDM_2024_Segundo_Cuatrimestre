@@ -21,7 +21,7 @@ class MovieResponseRepositoryTest {
         val response = MoviesResponse(1, movies)
 
         val movieService: MovieService = mock {
-            onBlocking { getMovies(anyString()) } doReturn
+            onBlocking { getNowPlayingMovies(anyString()) } doReturn
                     response
         }
 

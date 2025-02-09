@@ -12,8 +12,11 @@ interface RemoteKeyDao {
     suspend fun insertOrReplace(remoteKey: RemoteKey)
 
     @Query("SELECT * FROM remote_keys")
-    suspend fun remoteKey():RemoteKey
+    suspend fun getAll():List<RemoteKey>
 
     @Query("DELETE FROM remote_keys")
-    suspend fun delete()
+    suspend fun deleteAll()
+
+    @Query("SELECT * FROM remote_keys WHERE paginatedServiceId = :serviceId ")
+    suspend fun getByServiceId(serviceId : Int) : RemoteKey
 }

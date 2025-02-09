@@ -2,8 +2,9 @@ package es.rafapuig.movieapp.data
 
 import androidx.paging.PagingData
 import es.rafapuig.movieapp.data.local.dao.MovieDao
+import es.rafapuig.movieapp.data.mappers.toDatabase
+import es.rafapuig.movieapp.data.mappers.toDomain
 import es.rafapuig.movieapp.data.network.api.MovieService
-import es.rafapuig.movieapp.data.network.model.MovieResponse
 import es.rafapuig.movieapp.domain.MovieRepository
 import es.rafapuig.movieapp.domain.model.Movie
 
@@ -18,7 +19,7 @@ class MovieRepositoryImpl(
 ) : MovieRepository {
 
     override suspend fun fetchMovies(): List<Movie> {
-        val moviesResponse = movieService.getMovies()
+        val moviesResponse = movieService.getNowPlayingMovies()
         return moviesResponse.results.map { it.toDomain() }
     }
 
@@ -32,7 +33,7 @@ class MovieRepositoryImpl(
             var totalPages: Int = 0
             //Ahora recuperamos las películas del API
             do {
-                val moviesResponse = movieService.getMovies(page = page)
+                val moviesResponse = movieService.getNowPlayingMovies(page = page)
                 totalPages = moviesResponse.totalPages
                 // Las insertamos en la BD cache
                 movieDao.insertAll(moviesResponse.results.map { it.toDatabase() })

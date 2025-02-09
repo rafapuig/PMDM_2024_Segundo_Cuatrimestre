@@ -6,15 +6,13 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import es.rafapuig.movieapp.data.local.MoviesDatabase
+import es.rafapuig.movieapp.data.mappers.toDomain
 import es.rafapuig.movieapp.data.network.MoviesRemoteMediator
 import es.rafapuig.movieapp.data.network.api.MovieService
 import es.rafapuig.movieapp.domain.MovieRepository
 import es.rafapuig.movieapp.domain.model.Movie
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class MovieRepositoryPagedImpl(
@@ -32,10 +30,13 @@ class MovieRepositoryPagedImpl(
         movieDao.getNowPlayingMoviesPaged()
     }.flow.map { it.map { movieEntity -> movieEntity.toDomain() } }
 
+
+
     override suspend fun fetchMovies(): List<Movie> {
-        val moviesResponse = movieService.getMovies()
+        val moviesResponse = movieService.getNowPlayingMovies()
         return moviesResponse.results.map { it.toDomain() }
     }
+
 
     override fun fetchMoviesFlow(): Flow<List<Movie>> {
         TODO("Not yet implemented")

@@ -7,10 +7,11 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import es.rafapuig.movieapp.data.local.MoviesDatabase
-import es.rafapuig.movieapp.data.local.entity.MovieEntity
+import es.rafapuig.movieapp.data.local.entity.MovieGenreCrossRef
+import es.rafapuig.movieapp.data.local.entity.MovieWithGenreDetails
 import es.rafapuig.movieapp.data.local.entity.RemoteKey
+import es.rafapuig.movieapp.data.mappers.toDatabase
 import es.rafapuig.movieapp.data.network.api.MovieService
-import es.rafapuig.movieapp.data.toDatabase
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -19,24 +20,24 @@ import java.io.IOException
 class MoviesRemoteMediator(
     private val movieDb: MoviesDatabase,
     private val movieService: MovieService
-) : RemoteMediator<Int, MovieEntity>() {
+) : RemoteMediator<Int, MovieWithGenreDetails>() {
 
-    val TAG = "MOVIES_REMOTE_MEDIATOR"
+
+    private val TAG = "MOVIES_REMOTE_MEDIATOR"
+    private val FIRST_PAGE_KEY = 1
+
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, MovieEntity>
+        state: PagingState<Int, MovieWithGenreDetails>
     ): MediatorResult {
 
         return try {
-
-            val firstPageKey = 1
-
             val loadKey = when (loadType) {
 
                 LoadType.REFRESH -> {
-                    Log.d(TAG,"Load type is ${LoadType.REFRESH}, loadKey = $firstPageKey")
-                    firstPageKey
+                    Log.d(TAG, "Load type is ${LoadType.REFRESH}, loadKey = $FIRST_PAGE_KEY")
+                    FIRST_PAGE_KEY
                 }
 
                 LoadType.PREPEND -> {
@@ -47,56 +48,78 @@ class MoviesRemoteMediator(
                 LoadType.APPEND -> {
                     Log.d(TAG, "Load type is ${LoadType.APPEND}...")
 
-                    Log.i(TAG,"State:\n Initial load size: ${state.config.initialLoadSize}")
+                    Log.i(TAG, "State:\n Initial load size: ${state.config.initialLoadSize}")
                     Log.i(TAG, "Page size: ${state.config.pageSize}")
-                    Log.i(TAG,"Anchor position: ${state.anchorPosition}")
+                    Log.i(TAG, "Anchor position: ${state.anchorPosition}")
                     Log.i(TAG, "Pages: ${state.pages.size}")
 
-                    Log.d(TAG,"Obtaining remote key for paging...")
+                    Log.d(TAG, "Obtaining remote key for paging...")
                     val remoteKey = movieDb.withTransaction {
-                        movieDb.remoteKeyDao.remoteKey()
+                        movieDb.remoteKeyDao.getByServiceId(MovieService.PAGINATED_NOW_PLAYING_MOVIES)
                     }
-                    Log.d(TAG,"Remote key = $remoteKey")
+                    Log.d(TAG, "Remote key = $remoteKey")
 
                     if (remoteKey.nextKey == null) {
-                        return MediatorResult.Success(
-                            endOfPaginationReached = true
-                        )
+                        return MediatorResult.Success(endOfPaginationReached = true)
                     }
 
                     remoteKey.nextKey
                 }
             }
 
-            Log.d(TAG,"Loading data with loading key = $loadKey")
+            Log.d(TAG, "Loading data with loading key = $loadKey")
 
-            val response = movieService.getMovies(page = loadKey)
+            // Insertar los géneros en la BD
+            if (loadKey == FIRST_PAGE_KEY) {
+                val genresResponse = movieService.getAllMovieGenres()
+                movieDb.genreDao.upsertAll(genresResponse.genres.map { it.toDatabase() })
+            }
 
+            // Obtener la lista de películas del API Service (la pagina indicada por loadKey)
+            val response = movieService.getNowPlayingMovies(page = loadKey)
+
+            // Calcular cual va a ser la siguiente pagina
             val nextPage = response.page + 1
-            val nextKey = if(nextPage <= response.totalPages) nextPage else null
+            val nextKey = if (nextPage <= response.totalPages) nextPage else null
 
             Log.d(TAG, "The next key will be $nextKey")
 
             movieDb.withTransaction {
-                if(loadType == LoadType.REFRESH) {
-                    movieDb.remoteKeyDao.delete()
+                if (loadType == LoadType.REFRESH) {
+                    movieDb.remoteKeyDao.deleteAll()
                     movieDb.movieDao.clearAll()
                 }
 
-                // Update RemoteKey for this query.
-                movieDb.remoteKeyDao.delete()
+                //val movieEntities = response.results.map { it.toDatabase() }
+                //movieDb.movieDao.upsertAll(movieEntities)
 
-                Log.d(TAG,"Inserting a remote key $nextKey")
+                val genres = movieDb.genreDao.getAll()
+
+                response.results.forEach { movieApi ->
+
+                    val movieGenreIds = genres.filter { genre ->
+                        genre.id in movieApi.genreIds
+                    }.map { genre ->
+                        MovieGenreCrossRef(movieId = movieApi.id, genreId = genre.id)
+                    }
+
+                    movieDb.movieDao.upsertMovieWithGenreIds(movieApi.toDatabase(), movieGenreIds)
+                    //movieDb.movieDao.upsertMovieWithGenres(movieApi.toDatabase(), movieGenres)
+                }
+
+
+                // Update RemoteKey for this query.
+                movieDb.remoteKeyDao.deleteAll()
+
+                Log.d(TAG, "Inserting a remote key $nextKey")
                 movieDb.remoteKeyDao.insertOrReplace(
-                    RemoteKey(nextKey)
+                    RemoteKey(MovieService.PAGINATED_NOW_PLAYING_MOVIES, nextKey)
                 )
 
-                val key = movieDb.remoteKeyDao.remoteKey()
+                val key = movieDb.remoteKeyDao
+                    .getByServiceId(MovieService.PAGINATED_NOW_PLAYING_MOVIES)
                 // Cuando insertas null se guarda un 1 (no se por que)
-                Log.i(TAG,"The just inserted key = $key")
-
-                val movieEntities = response.results.map { it.toDatabase() }
-                movieDb.movieDao.upsertAll(movieEntities)
+                Log.i(TAG, "The just inserted key = $key")
             }
 
 

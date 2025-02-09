@@ -30,7 +30,7 @@ class MovieViewHolder(private val binding: ViewMovieItemBinding) : ViewHolder(bi
 
         binding.moviePoster.setImageResource(R.mipmap.ic_launcher)
 
-        if (movie.posterPath.isNotBlank()) {
+        if (movie.posterPath?.isNotBlank() == true) {
             Glide.with(itemView.context)
                 .load("$imageUrl${movie.posterPath}")
                 .placeholder(R.mipmap.ic_launcher)
