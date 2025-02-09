@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Upsert
 import es.rafapuig.movieapp.data.local.entity.GenreEntity
 import es.rafapuig.movieapp.data.local.entity.MovieEntity
@@ -17,6 +18,7 @@ interface MovieDao {
     @Query("SELECT * FROM movies")
     suspend fun getNowPlayingMovies() : List<MovieEntity>
 
+    @Transaction
     @Query("SELECT * FROM movies")
     fun getNowPlayingMoviesPaged() : PagingSource<Int, MovieWithGenreDetails>
 
