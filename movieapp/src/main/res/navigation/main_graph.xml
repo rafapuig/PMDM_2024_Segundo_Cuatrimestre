@@ -11,9 +11,8 @@
         android:label="fragment_movie_details"
         tools:layout="@layout/fragment_movie_details" >
         <argument
-            android:name="name"
-            app:argType="string"
-            android:defaultValue="Perico Palotes" />
+            android:name="movieId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/movieListFragment"

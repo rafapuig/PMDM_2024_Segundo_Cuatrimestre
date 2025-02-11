@@ -14,7 +14,7 @@ import es.rafapuig.movieapp.data.local.entity.RemoteKey
     MovieEntity::class,
     RemoteKey::class,
     GenreEntity::class,
-    MovieGenreCrossRef::class], version = 1)
+    MovieGenreCrossRef::class], version = 10)
 abstract class MoviesDatabase : RoomDatabase() {
     //abstract fun movieDao(): MovieDao
 

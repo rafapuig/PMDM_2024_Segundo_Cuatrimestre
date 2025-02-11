@@ -9,6 +9,8 @@ import es.rafapuig.movieapp.data.local.MoviesDatabase
 import es.rafapuig.movieapp.data.mappers.toDomain
 import es.rafapuig.movieapp.data.network.MoviesRemoteMediator
 import es.rafapuig.movieapp.data.network.api.MovieService
+import es.rafapuig.movieapp.data.network.model.MovieDetailsResponse
+import es.rafapuig.movieapp.data.network.model.videos.VideosResponse
 import es.rafapuig.movieapp.domain.MovieRepository
 import es.rafapuig.movieapp.domain.model.Movie
 
@@ -24,7 +26,10 @@ class MovieRepositoryPagedImpl(
 
     @OptIn(ExperimentalPagingApi::class)
     val flow = Pager(
-        config = PagingConfig(pageSize = 20, initialLoadSize = 20),
+        config = PagingConfig(
+            pageSize = 5,
+            initialLoadSize = 15
+        ),
         remoteMediator = MoviesRemoteMediator(movieDb, movieService)
     ) {
         movieDao.getNowPlayingMoviesPaged()
@@ -44,5 +49,13 @@ class MovieRepositoryPagedImpl(
 
     override fun fetchMoviesPagingFlow(): Flow<PagingData<Movie>> {
         return flow
+    }
+
+    override suspend fun fetchMovieDetails(movieId: Int): MovieDetailsResponse {
+        return movieService.getMovieDetails(movieId)
+    }
+
+    override suspend fun fetchMovieVideos(movieId: Int): VideosResponse {
+        return movieService.getVideos(movieId)
     }
 }
