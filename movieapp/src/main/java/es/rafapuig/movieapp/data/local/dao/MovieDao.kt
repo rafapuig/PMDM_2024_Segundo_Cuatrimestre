@@ -13,28 +13,36 @@ import es.rafapuig.movieapp.data.local.entity.MovieGenreCrossRef
 import es.rafapuig.movieapp.data.local.entity.MovieWithGenreDetails
 
 @Dao
-interface MovieDao {
+abstract class MovieDao {
 
     @Query("SELECT * FROM movies")
-    suspend fun getNowPlayingMovies() : List<MovieEntity>
+    abstract suspend fun getNowPlayingMovies() : List<MovieEntity>
 
     @Transaction
-    @Query("SELECT * FROM movies")
-    fun getNowPlayingMoviesPaged() : PagingSource<Int, MovieWithGenreDetails>
+    @Query("SELECT * FROM movies ORDER BY modified_at")
+    abstract fun getNowPlayingMoviesPaged() : PagingSource<Int, MovieWithGenreDetails>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertAll(movies:List<MovieEntity>)
+    abstract suspend fun insertAll(movies:List<MovieEntity>)
 
     @Upsert
-    suspend fun upsertMovieWithGenreIds(movie:MovieEntity, genres: List<MovieGenreCrossRef>)
+    abstract suspend fun upsertMovieWithGenreIds(movie:MovieEntity, genres: List<MovieGenreCrossRef>)
+
+
+    suspend fun upsertMovieWithGenreIdsWithTimestamp(movie:MovieEntity, genres: List<MovieGenreCrossRef>) {
+        upsertMovieWithGenreIds(movie.apply {
+            createdAt = System.currentTimeMillis()
+            modifiedAt = System.currentTimeMillis()
+        }, genres)
+    }
 
     @Upsert
-    suspend fun upsertMovieWithGenres(movie:MovieEntity, genres: List<GenreEntity>)
+    abstract suspend fun upsertMovieWithGenres(movie:MovieEntity, genres: List<GenreEntity>)
 
     @Query("DELETE FROM movies")
-    suspend fun clearAll()
+    abstract suspend fun clearAll()
 
     @Upsert
-    suspend fun upsertAll(movies: List<MovieEntity>)
+    abstract suspend fun upsertAll(movies: List<MovieEntity>)
 
 }

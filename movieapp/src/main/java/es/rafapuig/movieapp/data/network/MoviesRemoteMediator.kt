@@ -103,7 +103,7 @@ class MoviesRemoteMediator(
                         MovieGenreCrossRef(movieId = movieApi.id, genreId = genre.id)
                     }
 
-                    movieDb.movieDao.upsertMovieWithGenreIds(movieApi.toDatabase(), movieGenreIds)
+                    movieDb.movieDao.upsertMovieWithGenreIdsWithTimestamp(movieApi.toDatabase(), movieGenreIds)
                     //movieDb.movieDao.upsertMovieWithGenres(movieApi.toDatabase(), movieGenres)
                 }
 

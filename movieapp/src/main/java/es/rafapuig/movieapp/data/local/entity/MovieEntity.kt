@@ -20,5 +20,8 @@ data class MovieEntity(
     @ColumnInfo(name = "release_date") val releaseDate: String,
     @ColumnInfo(name = "video") val video: Boolean,
     @ColumnInfo(name = "vote_average") val voteAverage: Double,
-    @ColumnInfo(name = "vote_count") val voteCount: Int
+    @ColumnInfo(name = "vote_count") val voteCount: Int,
+
+    @ColumnInfo(name = "created_at") var createdAt: Long? = null,
+    @ColumnInfo(name = "modified_at") var modifiedAt: Long? = null
 )
