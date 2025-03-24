@@ -1,10 +1,9 @@
 package es.rafapuig.movieapp
 
 import android.app.Application
-import es.rafapuig.movieapp.data.MovieRepositoryImpl
 import es.rafapuig.movieapp.data.MovieRepositoryPagedImpl
 import es.rafapuig.movieapp.data.local.provider.MovieDatabaseProvider
-import es.rafapuig.movieapp.data.network.provider.MovieNetworkProvider
+import es.rafapuig.movieapp.data.network.provider.TMDBNetworkProvider
 import es.rafapuig.movieapp.domain.MovieRepository
 
 class MovieApplication : Application() {
@@ -14,8 +13,8 @@ class MovieApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val db = MovieDatabaseProvider.getDatabase(applicationContext)
-        val api = MovieNetworkProvider.getMovieApiService()
+        val db = MovieDatabaseProvider.provideDatabase(applicationContext)
+        val api = TMDBNetworkProvider.getTheMovieDBApiService()
 
         //movieRepository = MovieRepositoryImpl(api, db.movieDao)
         movieRepository = MovieRepositoryPagedImpl(api, db)

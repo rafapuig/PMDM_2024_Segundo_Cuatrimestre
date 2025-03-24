@@ -8,6 +8,6 @@ import com.squareup.moshi.JsonClass
 data class VideosResponse(
     @Json(name = "id")
     val id: Int = 0,
-    @Json(name = "results")
+    @Json(name = "TVShowListInfos")
     val results: List<VideoResponse> = listOf()
 )

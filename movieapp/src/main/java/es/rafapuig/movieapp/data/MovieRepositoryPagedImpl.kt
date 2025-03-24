@@ -8,7 +8,7 @@ import androidx.paging.map
 import es.rafapuig.movieapp.data.local.MoviesDatabase
 import es.rafapuig.movieapp.data.mappers.toDomain
 import es.rafapuig.movieapp.data.network.MoviesRemoteMediator
-import es.rafapuig.movieapp.data.network.api.MovieService
+import es.rafapuig.movieapp.data.network.api.TMDBApiService
 import es.rafapuig.movieapp.data.network.model.MovieDetailsResponse
 import es.rafapuig.movieapp.data.network.model.videos.VideosResponse
 import es.rafapuig.movieapp.domain.MovieRepository
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class MovieRepositoryPagedImpl(
-    private val movieService: MovieService,
+    private val TMDBApiService: TMDBApiService,
     movieDb: MoviesDatabase
 ) : MovieRepository {
 
@@ -30,7 +30,7 @@ class MovieRepositoryPagedImpl(
             pageSize = 5,
             initialLoadSize = 15
         ),
-        remoteMediator = MoviesRemoteMediator(movieDb, movieService)
+        remoteMediator = MoviesRemoteMediator(movieDb, TMDBApiService)
     ) {
         movieDao.getNowPlayingMoviesPaged()
     }.flow.map { it.map { movieEntity -> movieEntity.toDomain() } }
@@ -38,7 +38,7 @@ class MovieRepositoryPagedImpl(
 
 
     override suspend fun fetchMovies(): List<Movie> {
-        val moviesResponse = movieService.getNowPlayingMovies()
+        val moviesResponse = TMDBApiService.getNowPlayingMovies()
         return moviesResponse.results.map { it.toDomain() }
     }
 
@@ -52,10 +52,10 @@ class MovieRepositoryPagedImpl(
     }
 
     override suspend fun fetchMovieDetails(movieId: Int): MovieDetailsResponse {
-        return movieService.getMovieDetails(movieId)
+        return TMDBApiService.getMovieDetails(movieId)
     }
 
     override suspend fun fetchMovieVideos(movieId: Int): VideosResponse {
-        return movieService.getVideos(movieId)
+        return TMDBApiService.getVideos(movieId)
     }
 }

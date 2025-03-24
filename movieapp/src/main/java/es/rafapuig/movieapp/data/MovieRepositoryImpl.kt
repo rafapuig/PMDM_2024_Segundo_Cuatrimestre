@@ -4,7 +4,7 @@ import androidx.paging.PagingData
 import es.rafapuig.movieapp.data.local.dao.MovieDao
 import es.rafapuig.movieapp.data.mappers.toDatabase
 import es.rafapuig.movieapp.data.mappers.toDomain
-import es.rafapuig.movieapp.data.network.api.MovieService
+import es.rafapuig.movieapp.data.network.api.TMDBApiService
 import es.rafapuig.movieapp.domain.MovieRepository
 import es.rafapuig.movieapp.domain.model.Movie
 
@@ -14,12 +14,12 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class MovieRepositoryImpl(
-    private val movieService: MovieService,
+    private val TMDBApiService: TMDBApiService,
     private val movieDao: MovieDao
 ) : MovieRepository {
 
     override suspend fun fetchMovies(): List<Movie> {
-        val moviesResponse = movieService.getNowPlayingMovies()
+        val moviesResponse = TMDBApiService.getNowPlayingMovies()
         return moviesResponse.results.map { it.toDomain() }
     }
 
@@ -33,7 +33,7 @@ class MovieRepositoryImpl(
             var totalPages: Int = 0
             //Ahora recuperamos las películas del API
             do {
-                val moviesResponse = movieService.getNowPlayingMovies(page = page)
+                val moviesResponse = TMDBApiService.getNowPlayingMovies(page = page)
                 totalPages = moviesResponse.totalPages
                 // Las insertamos en la BD cache
                 movieDao.insertAll(moviesResponse.results.map { it.toDatabase() })
@@ -41,7 +41,7 @@ class MovieRepositoryImpl(
 
 
             val updatedMovies = movieDao.getNowPlayingMovies().map { it.toDomain() }
-            //emit(movieService.getMovies().results.map { it.toDomain() })
+            //emit(movieService.getMovies().TVShowListInfos.map { it.toDomain() })
             // Y volvemos a emitir
             emit(updatedMovies)
         }.flowOn(Dispatchers.IO)

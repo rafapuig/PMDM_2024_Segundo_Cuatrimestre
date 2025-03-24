@@ -8,9 +8,10 @@ object MovieDatabaseProvider {
 
     private const val DB_FILENAME = "movies.db"
 
-    fun getDatabase(context: Context) =
+    fun provideDatabase(context: Context) =
         Room
             .databaseBuilder(context, MoviesDatabase::class.java, DB_FILENAME)
             .fallbackToDestructiveMigration()
             .build()
+
 }

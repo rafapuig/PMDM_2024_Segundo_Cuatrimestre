@@ -11,7 +11,7 @@ import es.rafapuig.movieapp.data.local.entity.MovieGenreCrossRef
 import es.rafapuig.movieapp.data.local.entity.MovieWithGenreDetails
 import es.rafapuig.movieapp.data.local.entity.RemoteKey
 import es.rafapuig.movieapp.data.mappers.toDatabase
-import es.rafapuig.movieapp.data.network.api.MovieService
+import es.rafapuig.movieapp.data.network.api.TMDBApiService
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -19,7 +19,7 @@ import java.io.IOException
 @OptIn(ExperimentalPagingApi::class)
 class MoviesRemoteMediator(
     private val movieDb: MoviesDatabase,
-    private val movieService: MovieService
+    private val TMDBApiService: TMDBApiService
 ) : RemoteMediator<Int, MovieWithGenreDetails>() {
 
 
@@ -55,7 +55,7 @@ class MoviesRemoteMediator(
 
                     Log.d(TAG, "Obtaining remote key for paging...")
                     val remoteKey = movieDb.withTransaction {
-                        movieDb.remoteKeyDao.getByServiceId(MovieService.PAGINATED_NOW_PLAYING_MOVIES)
+                        movieDb.remoteKeyDao.getByServiceId(TMDBApiService.PAGINATED_NOW_PLAYING_MOVIES)
                     }
                     Log.d(TAG, "Remote key = $remoteKey")
 
@@ -71,12 +71,12 @@ class MoviesRemoteMediator(
 
             // Insertar los géneros en la BD
             if (loadKey == FIRST_PAGE_KEY) {
-                val genresResponse = movieService.getAllMovieGenres()
+                val genresResponse = TMDBApiService.getAllMovieGenres()
                 movieDb.genreDao.upsertAll(genresResponse.genres.map { it.toDatabase() })
             }
 
             // Obtener la lista de películas del API Service (la pagina indicada por loadKey)
-            val response = movieService.getNowPlayingMovies(page = loadKey)
+            val response = TMDBApiService.getNowPlayingMovies(page = loadKey)
 
             // Calcular cual va a ser la siguiente pagina
             val nextPage = response.page + 1
@@ -90,7 +90,7 @@ class MoviesRemoteMediator(
                     movieDb.movieDao.clearAll()
                 }
 
-                //val movieEntities = response.results.map { it.toDatabase() }
+                //val movieEntities = response.TVShowListInfos.map { it.toDatabase() }
                 //movieDb.movieDao.upsertAll(movieEntities)
 
                 val genres = movieDb.genreDao.getAll()
@@ -113,18 +113,18 @@ class MoviesRemoteMediator(
 
                 Log.d(TAG, "Inserting a remote key $nextKey")
                 movieDb.remoteKeyDao.insertOrReplace(
-                    RemoteKey(MovieService.PAGINATED_NOW_PLAYING_MOVIES, nextKey)
+                    RemoteKey(TMDBApiService.PAGINATED_NOW_PLAYING_MOVIES, nextKey)
                 )
 
                 val key = movieDb.remoteKeyDao
-                    .getByServiceId(MovieService.PAGINATED_NOW_PLAYING_MOVIES)
+                    .getByServiceId(TMDBApiService.PAGINATED_NOW_PLAYING_MOVIES)
                 // Cuando insertas null se guarda un 1 (no se por que)
                 Log.i(TAG, "The just inserted key = $key")
             }
 
 
             // Si la lista resultado esta vacia es que ya no hemos ido a una pagina que no tiene datos
-            //MediatorResult.Success(response.results.isEmpty())
+            //MediatorResult.Success(response.TVShowListInfos.isEmpty())
             //MediatorResult.Success(endOfPaginationReached = response.page == response.totalPages)
             MediatorResult.Success(endOfPaginationReached = nextKey == null)
         } catch (ex: HttpException) {
