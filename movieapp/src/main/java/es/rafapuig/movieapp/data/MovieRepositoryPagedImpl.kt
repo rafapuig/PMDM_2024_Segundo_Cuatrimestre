@@ -15,6 +15,7 @@ import es.rafapuig.movieapp.domain.MovieRepository
 import es.rafapuig.movieapp.domain.model.Movie
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 
 class MovieRepositoryPagedImpl(
@@ -44,7 +45,7 @@ class MovieRepositoryPagedImpl(
 
 
     override fun fetchMoviesFlow(): Flow<List<Movie>> {
-        TODO("Not yet implemented")
+        return emptyFlow()
     }
 
     override fun fetchMoviesPagingFlow(): Flow<PagingData<Movie>> {

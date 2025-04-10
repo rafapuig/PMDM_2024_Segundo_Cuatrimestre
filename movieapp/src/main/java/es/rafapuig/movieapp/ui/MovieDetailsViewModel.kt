@@ -5,14 +5,12 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import es.rafapuig.movieapp.MovieApplication
+import es.rafapuig.movieapp.TheMovieDBApplication
 import es.rafapuig.movieapp.data.network.model.MovieDetailsResponse
 import es.rafapuig.movieapp.domain.MovieRepository
-import es.rafapuig.movieapp.domain.model.Movie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 class MovieDetailsViewModel(private val movieRepository: MovieRepository) : ViewModel() {
@@ -41,7 +39,7 @@ class MovieDetailsViewModel(private val movieRepository: MovieRepository) : View
     companion object {
         val Factory = viewModelFactory {
             initializer {
-                val application = this[APPLICATION_KEY] as MovieApplication
+                val application = this[APPLICATION_KEY] as TheMovieDBApplication
                 MovieDetailsViewModel(application.movieRepository)
             }
         }

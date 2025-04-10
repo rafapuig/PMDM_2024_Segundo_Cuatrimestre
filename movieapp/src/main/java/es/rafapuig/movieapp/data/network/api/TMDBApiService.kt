@@ -11,7 +11,7 @@ import retrofit2.http.Query
 
 interface TMDBApiService {
 
-    companion object {
+    companion object Paging {
         const val PAGINATED_NOW_PLAYING_MOVIES = 1
     }
 
@@ -24,11 +24,20 @@ interface TMDBApiService {
         const val WEEK = "week"
     }
 
+    enum class Time(val text: String) {
+        DAY("day"),
+        WEEK("week");
+
+        override fun toString(): String {
+            return text;
+        }
+    }
+
     @GET("trending/tv/{time_window}")
     suspend fun fetchTrendingTVShows(
         @Path("time_window") timeWindow: String = TimeWindow.DAY,
         @Query("language") language: String = ISO.ES_ES
-    ) : TrendingTVShowsResponse
+    ): TrendingTVShowsResponse
 
 
     @GET("genre/movie/list")
@@ -46,14 +55,14 @@ interface TMDBApiService {
 
     @GET("https://api.themoviedb.org/3/movie/{movie_id}")
     suspend fun getMovieDetails(
-        @Path("movie_id") movieId : Int,
+        @Path("movie_id") movieId: Int,
         @Query("language") language: String = "es-ES"
-    ) : MovieDetailsResponse
+    ): MovieDetailsResponse
 
 
     @GET("https://api.themoviedb.org/3/movie/{movie_id}/videos")
     suspend fun getVideos(
-        @Path("movie_id") movieId : Int,
+        @Path("movie_id") movieId: Int,
         @Query("language") language: String = "es-ES"
     ): VideosResponse
 

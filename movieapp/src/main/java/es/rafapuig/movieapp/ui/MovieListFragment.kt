@@ -26,8 +26,11 @@ class MovieListFragment : Fragment() {
     private val viewModel: MovieViewModel by viewModels { MovieViewModel.Factory }
 
     private fun onMovieItemClick(movie: Movie) {
-        findNavController().navigate(MovieListFragmentDirections
-            .actionMovieListFragmentToMovieDetailsFragment(movie.id))
+        findNavController()
+            .navigate(
+                MovieListFragmentDirections
+                    .actionMovieListFragmentToMovieDetailsFragment(movie.id)
+            )
     }
 
     override fun onCreateView(

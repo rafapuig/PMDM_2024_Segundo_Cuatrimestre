@@ -12,6 +12,7 @@ plugins {
     //Room Gradle Plugin
     alias(libs.plugins.androidx.room) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.compose) apply false
     //id("androidx.room") version "$room_version" apply false
 
 

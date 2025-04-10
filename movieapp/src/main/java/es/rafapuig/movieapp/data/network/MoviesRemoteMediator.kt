@@ -19,7 +19,7 @@ import java.io.IOException
 @OptIn(ExperimentalPagingApi::class)
 class MoviesRemoteMediator(
     private val movieDb: MoviesDatabase,
-    private val TMDBApiService: TMDBApiService
+    private val aTMDBApiService: TMDBApiService
 ) : RemoteMediator<Int, MovieWithGenreDetails>() {
 
 
@@ -71,12 +71,12 @@ class MoviesRemoteMediator(
 
             // Insertar los géneros en la BD
             if (loadKey == FIRST_PAGE_KEY) {
-                val genresResponse = TMDBApiService.getAllMovieGenres()
+                val genresResponse = aTMDBApiService.getAllMovieGenres()
                 movieDb.genreDao.upsertAll(genresResponse.genres.map { it.toDatabase() })
             }
 
             // Obtener la lista de películas del API Service (la pagina indicada por loadKey)
-            val response = TMDBApiService.getNowPlayingMovies(page = loadKey)
+            val response = aTMDBApiService.getNowPlayingMovies(page = loadKey)
 
             // Calcular cual va a ser la siguiente pagina
             val nextPage = response.page + 1
