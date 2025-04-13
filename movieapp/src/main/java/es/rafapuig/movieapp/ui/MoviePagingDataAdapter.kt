@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import es.rafapuig.movieapp.databinding.ViewMovieItemBinding
-import es.rafapuig.movieapp.domain.model.Movie
+import es.rafapuig.movieapp.movies.domain.model.Movie
 
 class MoviePagingDataAdapter(
     val onItemClickListener: (Movie) -> Unit

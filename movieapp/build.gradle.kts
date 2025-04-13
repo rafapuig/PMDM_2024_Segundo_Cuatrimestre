@@ -59,6 +59,12 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.androidx.lifecycle.viewmodel.android)
 
+
+    //Lifecycle viewmodel en compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+
+
+
     // Dependencias para la navegación entre fragmentos
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
@@ -91,6 +97,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    //Room
     runtimeOnly("androidx.room:room-runtime:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")

@@ -5,14 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
-import es.rafapuig.movieapp.databinding.ActivityMainBinding
 import es.rafapuig.movieapp.databinding.FragmentMovieListBinding
-import es.rafapuig.movieapp.domain.model.Movie
+import es.rafapuig.movieapp.movies.domain.model.Movie
+import es.rafapuig.movieapp.movies.ui.MovieViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

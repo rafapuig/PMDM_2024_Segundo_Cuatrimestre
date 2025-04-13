@@ -11,20 +11,22 @@ import es.rafapuig.movieapp.data.local.entity.MovieGenreCrossRef
 import es.rafapuig.movieapp.data.local.entity.MovieWithGenreDetails
 import es.rafapuig.movieapp.data.local.entity.RemoteKey
 import es.rafapuig.movieapp.data.mappers.toDatabase
-import es.rafapuig.movieapp.data.network.api.TMDBApiService
+import es.rafapuig.movieapp.movies.data.mappers.toDatabase
+import es.rafapuig.movieapp.movies.data.network.api.MovieApiService
 import retrofit2.HttpException
 import java.io.IOException
 
 
 @OptIn(ExperimentalPagingApi::class)
 class MoviesRemoteMediator(
-    private val movieDb: MoviesDatabase,
-    private val aTMDBApiService: TMDBApiService
+    private val db: MoviesDatabase,
+    private val apiService: MovieApiService
 ) : RemoteMediator<Int, MovieWithGenreDetails>() {
 
 
     private val TAG = "MOVIES_REMOTE_MEDIATOR"
     private val FIRST_PAGE_KEY = 1
+    private val paginatedServiceId = MovieApiService.PAGINATED_NOW_PLAYING_MOVIES
 
 
     override suspend fun load(
@@ -54,8 +56,8 @@ class MoviesRemoteMediator(
                     Log.i(TAG, "Pages: ${state.pages.size}")
 
                     Log.d(TAG, "Obtaining remote key for paging...")
-                    val remoteKey = movieDb.withTransaction {
-                        movieDb.remoteKeyDao.getByServiceId(TMDBApiService.PAGINATED_NOW_PLAYING_MOVIES)
+                    val remoteKey = db.withTransaction {
+                        db.remoteKeyDao.getByServiceId(paginatedServiceId)
                     }
                     Log.d(TAG, "Remote key = $remoteKey")
 
@@ -71,12 +73,12 @@ class MoviesRemoteMediator(
 
             // Insertar los géneros en la BD
             if (loadKey == FIRST_PAGE_KEY) {
-                val genresResponse = aTMDBApiService.getAllMovieGenres()
-                movieDb.genreDao.upsertAll(genresResponse.genres.map { it.toDatabase() })
+                val genresResponse = apiService.getAllMovieGenres()
+                db.genreDao.upsertAll(genresResponse.genres.map { it.toDatabase() })
             }
 
             // Obtener la lista de películas del API Service (la pagina indicada por loadKey)
-            val response = aTMDBApiService.getNowPlayingMovies(page = loadKey)
+            val response = apiService.getNowPlayingMovies(page = loadKey)
 
             // Calcular cual va a ser la siguiente pagina
             val nextPage = response.page + 1
@@ -84,16 +86,16 @@ class MoviesRemoteMediator(
 
             Log.d(TAG, "The next key will be $nextKey")
 
-            movieDb.withTransaction {
+            db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    movieDb.remoteKeyDao.deleteAll()
-                    movieDb.movieDao.clearAll()
+                    db.remoteKeyDao.deleteAll()
+                    db.movieDao.clearAll()
                 }
 
                 //val movieEntities = response.TVShowListInfos.map { it.toDatabase() }
                 //movieDb.movieDao.upsertAll(movieEntities)
 
-                val genres = movieDb.genreDao.getAll()
+                val genres = db.genreDao.getAll()
 
                 response.results.forEach { movieApi ->
 
@@ -103,21 +105,21 @@ class MoviesRemoteMediator(
                         MovieGenreCrossRef(movieId = movieApi.id, genreId = genre.id)
                     }
 
-                    movieDb.movieDao.upsertMovieWithGenreIdsWithTimestamp(movieApi.toDatabase(), movieGenreIds)
+                    db.movieDao.upsertMovieWithGenreIdsWithTimestamp(movieApi.toDatabase(), movieGenreIds)
                     //movieDb.movieDao.upsertMovieWithGenres(movieApi.toDatabase(), movieGenres)
                 }
 
 
                 // Update RemoteKey for this query.
-                movieDb.remoteKeyDao.deleteAll()
+                db.remoteKeyDao.deleteAll()
 
                 Log.d(TAG, "Inserting a remote key $nextKey")
-                movieDb.remoteKeyDao.insertOrReplace(
-                    RemoteKey(TMDBApiService.PAGINATED_NOW_PLAYING_MOVIES, nextKey)
+                db.remoteKeyDao.insertOrReplace(
+                    RemoteKey(paginatedServiceId, nextKey)
                 )
 
-                val key = movieDb.remoteKeyDao
-                    .getByServiceId(TMDBApiService.PAGINATED_NOW_PLAYING_MOVIES)
+                val key = db.remoteKeyDao
+                    .getByServiceId(paginatedServiceId)
                 // Cuando insertas null se guarda un 1 (no se por que)
                 Log.i(TAG, "The just inserted key = $key")
             }

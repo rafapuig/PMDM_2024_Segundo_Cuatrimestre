@@ -1,16 +1,19 @@
 package es.rafapuig.movieapp
 
 import android.app.Application
-import es.rafapuig.movieapp.data.MovieRepositoryPagedImpl
-import es.rafapuig.movieapp.data.TVShowRepositoryImpl
+import es.rafapuig.movieapp.movies.data.MovieRepositoryPagedImpl
+import es.rafapuig.movieapp.trending.tvshows.data.TVShowRepositoryImpl
 import es.rafapuig.movieapp.data.local.provider.MovieDatabaseProvider
-import es.rafapuig.movieapp.data.network.provider.TMDBNetworkProvider
-import es.rafapuig.movieapp.domain.MockTvShowRepository
-import es.rafapuig.movieapp.domain.MovieRepository
-import es.rafapuig.movieapp.domain.TvShowRepository
+import es.rafapuig.movieapp.core.data.network.provider.TMDBNetworkProvider
+import es.rafapuig.movieapp.movies.data.MovieRepositoryImpl
+import es.rafapuig.movieapp.movies.domain.MovieRepository
+import es.rafapuig.movieapp.movies.data.network.provider.MovieServiceProvider
+import es.rafapuig.movieapp.trending.tvshows.domain.TvShowRepository
+import es.rafapuig.movieapp.trending.tvshows.data.network.TvShowsServiceProvider
 
 class TheMovieDBApplication : Application() {
 
+    lateinit var moviesRepository: MovieRepository
     lateinit var movieRepository: MovieRepository
 
     // Repositorio para TV Shows
@@ -19,14 +22,18 @@ class TheMovieDBApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val apiService = TMDBNetworkProvider.getTheMovieDBApiService()
+        val retrofit = TMDBNetworkProvider.provideRetrofit()
+
+        val movieApiService = MovieServiceProvider.provideService(retrofit)
+        val tvShowsApiService = TvShowsServiceProvider.provideService(retrofit)
+
 
         val db = MovieDatabaseProvider.provideDatabase(applicationContext)
 
         //movieRepository = MovieRepositoryImpl(api, db.movieDao)
-        movieRepository = MovieRepositoryPagedImpl(apiService, db)
+        movieRepository = MovieRepositoryPagedImpl(movieApiService, db)
+        moviesRepository = MovieRepositoryImpl(movieApiService,db.movieDao)
 
-
-        tvShowRepository = TVShowRepositoryImpl(apiService)
+        tvShowRepository = TVShowRepositoryImpl(tvShowsApiService)
     }
 }

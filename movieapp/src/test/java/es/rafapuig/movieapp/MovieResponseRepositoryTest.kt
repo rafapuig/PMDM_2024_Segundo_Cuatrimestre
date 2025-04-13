@@ -1,7 +1,8 @@
 package es.rafapuig.movieapp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import es.rafapuig.movieapp.data.network.provider.TMDBNetworkProvider
+import es.rafapuig.movieapp.core.data.network.provider.TMDBNetworkProvider
+import es.rafapuig.movieapp.movies.data.network.provider.MovieServiceProvider
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -22,7 +23,8 @@ class MovieResponseRepositoryTest {
 
 
         runTest {
-            val service = TMDBNetworkProvider.getTheMovieDBApiService()
+            val retrofit = TMDBNetworkProvider.provideRetrofit()
+            val service = MovieServiceProvider.provideService(retrofit)
             val movie = service.getMovieDetails(1064486)
             //val movieLiveData = movies2
             println(movie.toString())

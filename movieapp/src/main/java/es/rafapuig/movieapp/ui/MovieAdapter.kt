@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import es.rafapuig.movieapp.databinding.ViewMovieItemBinding
-import es.rafapuig.movieapp.domain.model.Movie
+import es.rafapuig.movieapp.movies.domain.model.Movie
 
 class MovieAdapter : RecyclerView.Adapter<MovieViewHolder>() {
 

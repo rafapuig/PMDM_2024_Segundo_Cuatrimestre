@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import es.rafapuig.movieapp.TheMovieDBApplication
-import es.rafapuig.movieapp.data.network.model.MovieDetailsResponse
-import es.rafapuig.movieapp.domain.MovieRepository
+import es.rafapuig.movieapp.movies.data.network.model.MovieDetailsResponse
+import es.rafapuig.movieapp.movies.domain.MovieRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

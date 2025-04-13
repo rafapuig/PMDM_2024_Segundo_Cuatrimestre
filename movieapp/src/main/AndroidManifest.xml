@@ -11,14 +11,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PMDM_2024_Segundo_Cuatrimestre">
+
+
+
         <activity
-            android:name=".ui.TrendingTvShowsListActivity"
+            android:name=".trending.tvshows.ui.TrendingTvShowsListActivity"
             android:exported="true"
             android:label="@string/title_activity_trending_tv_shows_list"
             android:theme="@style/Theme.PMDM_2024_Segundo_Cuatrimestre">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -32,14 +34,11 @@
             android:name=".ui.MainActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.TestActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".movies.ui.NowPlayingMoviesActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".trending.tvshows.ui.TestActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

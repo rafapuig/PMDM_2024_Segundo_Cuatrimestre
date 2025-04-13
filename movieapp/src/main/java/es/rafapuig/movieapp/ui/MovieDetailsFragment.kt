@@ -1,6 +1,5 @@
 package es.rafapuig.movieapp.ui
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -14,8 +13,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.snackbar.Snackbar
-import es.rafapuig.movieapp.data.network.model.MovieDetailsResponse
 import es.rafapuig.movieapp.databinding.FragmentMovieDetailsBinding
 import kotlinx.coroutines.launch
 
