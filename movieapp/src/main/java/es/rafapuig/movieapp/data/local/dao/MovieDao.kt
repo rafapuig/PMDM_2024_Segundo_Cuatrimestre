@@ -45,4 +45,8 @@ abstract class MovieDao {
     @Upsert
     abstract suspend fun upsertAll(movies: List<MovieEntity>)
 
+    @Transaction
+    @Query("SELECT * FROM movies WHERE id = :movieId")
+   abstract suspend fun getMovieWithGenreDetails(movieId:Int) : List<MovieWithGenreDetails>
+
 }

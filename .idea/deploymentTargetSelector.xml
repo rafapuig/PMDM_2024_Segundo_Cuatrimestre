@@ -17,10 +17,19 @@
       <SelectionState runConfigName="cancelingcoroutines">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="NowPlayingMoviesActivity (1)">
+      <SelectionState runConfigName="useAppContext()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="NowPlayingMoviesActivity (2)">
+      <SelectionState runConfigName="testMovieDao()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="MainActivity2">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="testTvShowDao()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="testInsertFromApi()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
