@@ -12,12 +12,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import es.rafapuig.movieapp.databinding.ActivityTestBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import es.rafapuig.movieapp.trending.tvshows.ui.TrendingTvShowsViewModel.*
 
 class TestActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityTestBinding.inflate(layoutInflater) }
 
-    private val viewModel: TvShowsViewModel by viewModels { TvShowsViewModel.Factory }
+    private val viewModel: TrendingTvShowsViewModel by viewModels { TrendingTvShowsViewModel.Factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,25 +32,22 @@ class TestActivity : AppCompatActivity() {
             insets
         }
 
+        observeTrendingTvShows()
 
-        initUiStateObserving()
-
-        viewModel.fetchTrendingTvShows()
+        //viewModel.fetchTrendingTvShows()
     }
 
-    private fun initUiStateObserving() {
+    private fun observeTrendingTvShows() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.trendingTvShows.collectLatest { uiState ->
                     when (uiState) {
-                        TvShowsUiState.Loading -> binding.messageTextView.text = "Cargando..."
-                        is TvShowsUiState.Success ->
+                        UiState.Loading -> binding.messageTextView.text = "Cargando..."
+                        is UiState.Success ->
                             binding.messageTextView.text = uiState.tvShows.toString()
 
-                        is TvShowsUiState.Error ->
+                        is UiState.Error ->
                             binding.messageTextView.text = uiState.exception.message.toString()
-
-
                     }
                 }
             }

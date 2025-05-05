@@ -18,8 +18,11 @@ class MovieRepositoryImpl(
     private val movieDao: MovieDao
 ) : MovieRepository {
 
-    // Devuelve la lista de peliculas recuperada directamente del API
-    // Transformadas a modelo del dominio
+    /**
+     * Devuelve la lista de peliculas recuperada directamente del API
+     * Transformadas a modelo del dominio
+     * Devuelve la primera página de películas
+     */
     override suspend fun fetchMovies(): List<Movie> {
         val response = apiService.getNowPlayingMovies()
         return response.results.map { movieResponse ->

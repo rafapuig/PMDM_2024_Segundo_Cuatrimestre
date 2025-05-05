@@ -28,7 +28,7 @@ class NowPlayingMoviesActivity : AppCompatActivity() {
         NowPlayingMoviesViewModel.Factory
     }
 
-    val binding by lazy { ActivityNowPlayingMoviesBinding.inflate(layoutInflater) }
+    private val binding by lazy { ActivityNowPlayingMoviesBinding.inflate(layoutInflater) }
 
     private val movieAdapter by lazy { MovieListAdapter { onMovieItemClick(it) } }
 
@@ -37,6 +37,7 @@ class NowPlayingMoviesActivity : AppCompatActivity() {
             .make(binding.root, "Clicked on ${movie.title}!!", Snackbar.LENGTH_SHORT)
             .show()
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +52,6 @@ class NowPlayingMoviesActivity : AppCompatActivity() {
         binding.movieList.adapter = movieAdapter
 
         viewModel.fetchMovies()
-
-
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

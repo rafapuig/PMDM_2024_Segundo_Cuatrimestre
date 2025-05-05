@@ -2,15 +2,14 @@ package es.rafapuig.movieapp.ui
 
 import es.rafapuig.movieapp.trending.tvshows.data.TVShowRepositoryImpl
 import es.rafapuig.movieapp.core.data.network.provider.TMDBNetworkProvider
-import es.rafapuig.movieapp.movies.data.network.provider.MovieServiceProvider
 import es.rafapuig.movieapp.trending.tvshows.data.network.TvShowsServiceProvider
 import es.rafapuig.movieapp.trending.tvshows.domain.TvShowRepository
-import es.rafapuig.movieapp.trending.tvshows.ui.TvShowsViewModel
+import es.rafapuig.movieapp.trending.tvshows.ui.TrendingTvShowsViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-class TvShowsViewModelTest {
+class TrendingTvShowsViewModelTest {
 
     @Test
     fun fetchTrendingTvShows() {
@@ -18,7 +17,7 @@ class TvShowsViewModelTest {
         val retrofit = TMDBNetworkProvider.provideRetrofit()
         val service = TvShowsServiceProvider.provideService(retrofit)
         val repository : TvShowRepository = TVShowRepositoryImpl(service)
-        val viewModel = TvShowsViewModel(repository)
+        val viewModel = TrendingTvShowsViewModel(repository)
 
 
         runTest {

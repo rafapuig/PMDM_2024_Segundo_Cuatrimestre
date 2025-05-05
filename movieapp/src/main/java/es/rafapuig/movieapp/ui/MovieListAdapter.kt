@@ -8,7 +8,7 @@ import es.rafapuig.movieapp.databinding.ViewMovieItemBinding
 import es.rafapuig.movieapp.movies.domain.model.Movie
 
 class MovieListAdapter(
-    val onItemClickListener: (Movie) -> Unit
+    val onItemClickListener: (Movie) -> Unit = {}
 ) : ListAdapter<Movie, MovieViewHolder>(DIFF_CALLBACK) {
 
     companion object {

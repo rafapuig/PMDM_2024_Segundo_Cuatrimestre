@@ -25,6 +25,7 @@ interface TvShowsApiService {
     @GET("trending/tv/{time_window}")
     suspend fun fetchTrendingTVShows(
         @Path("time_window") timeWindow: String = TimeWindow.DAY,
-        @Query("language") language: String = ISO.ES_ES
+        @Query("language") language: String = ISO.ES_ES,
+        @Query("page") page : Int = 1
     ): TrendingTVShowsResponse
 }

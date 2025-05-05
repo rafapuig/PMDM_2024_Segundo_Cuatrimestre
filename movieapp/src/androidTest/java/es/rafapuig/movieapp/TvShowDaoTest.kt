@@ -8,10 +8,12 @@ import es.rafapuig.movieapp.core.data.network.provider.TMDBNetworkProvider
 import es.rafapuig.movieapp.data.local.MoviesDatabase
 import es.rafapuig.movieapp.data.local.entity.TvShowEntity
 import es.rafapuig.movieapp.data.mappers.toDatabase
-import es.rafapuig.movieapp.trending.tvshows.data.TVShowRepositoryImpl
 import es.rafapuig.movieapp.trending.tvshows.data.api.TvShowsApiService
+import es.rafapuig.movieapp.trending.tvshows.data.model.TrendingTVShowsResponse
 import es.rafapuig.movieapp.trending.tvshows.data.network.TvShowsServiceProvider
-import es.rafapuig.movieapp.trending.tvshows.domain.TvShowRepository
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -51,11 +53,39 @@ class TvShowDaoTest {
 
     @Test
     fun testInsertFromApi() = runTest {
-        val response = apiService.fetchTrendingTVShows()
-        val tvShowsEntities = response.tvShowList.map { it.toDatabase() }
-        db.tvShowDao.insertAll(tvShowsEntities)
+        val deferredResponse = async { return@async apiService.fetchTrendingTVShows(page = 1) }
+        val response = deferredResponse.await()
+
+        launch {
+            val tvShowsEntities = response.tvShowList.map { it.toDatabase() }
+            db.tvShowDao.insertAll(tvShowsEntities)
+        }
+
+        println("Paginas totales: ${response.totalPages}")
+
+
+        val list = mutableListOf<Deferred<TrendingTVShowsResponse>>()
+
+        if(response.totalPages > 1) {
+            var count = 2
+            while (count <= 6 /* response.totalPages*/) {
+                list.add(async { return@async apiService.fetchTrendingTVShows(page = count) })
+                count++
+            }
+        }
+
+        list.forEach {
+            val tvShowsResponse = it.await()
+            launch {
+                val tvShowsEntities = tvShowsResponse.tvShowList.map { it.toDatabase() }
+                db.tvShowDao.insertAll(tvShowsEntities)
+            }
+        }
+
         val tvShows = db.tvShowDao.getAll()
         tvShows.forEach { println(it) }
+
+        println("Total: " + db.tvShowDao.getAll().count())
     }
 
 }

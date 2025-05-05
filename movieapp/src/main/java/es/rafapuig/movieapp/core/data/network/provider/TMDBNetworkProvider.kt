@@ -73,6 +73,7 @@ object TMDBNetworkProvider {
         .addConverterFactory(converterFactory)
         .build()
 
+
     fun provideRetrofit(): Retrofit =
         provideRetrofit(
             provideOkHttpClient(API_TOKEN),
