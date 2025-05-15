@@ -1,4 +1,4 @@
-package es.rafapuig.movieapp.data.local.entity
+package es.rafapuig.movieapp.movies.data.local.entity
 
 import androidx.room.Embedded
 import androidx.room.Junction

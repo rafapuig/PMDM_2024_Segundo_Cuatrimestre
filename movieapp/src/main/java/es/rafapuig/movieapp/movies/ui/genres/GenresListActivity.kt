@@ -1,4 +1,4 @@
-package es.rafapuig.movieapp.movies.ui
+package es.rafapuig.movieapp.movies.ui.genres
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -10,8 +10,10 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import es.rafapuig.movieapp.R
+import com.google.android.material.snackbar.Snackbar
 import es.rafapuig.movieapp.databinding.ActivityGenresListBinding
+import es.rafapuig.movieapp.movies.domain.model.Genre
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class GenresListActivity : AppCompatActivity() {
@@ -19,6 +21,14 @@ class GenresListActivity : AppCompatActivity() {
     val binding: ActivityGenresListBinding by lazy { ActivityGenresListBinding.inflate(layoutInflater) }
 
     val viewModel: GenresListViewModel by viewModels { GenresListViewModel.Factory }
+
+    val genreAdapter by lazy { GenreListAdapter { onGenreItemClick(it) } }
+
+    fun onGenreItemClick(genre: Genre) {
+        Snackbar
+            .make(binding.root, "Clicked on ${genre.name}!!", Snackbar.LENGTH_SHORT)
+            .show()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,10 +46,18 @@ class GenresListActivity : AppCompatActivity() {
             viewModel.getGenres()
         }
 
+        binding.rvGenres.adapter = genreAdapter
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
+                viewModel.uiState.collectLatest { uiState ->
+
                     binding.progressBar3.isVisible = uiState.isLoading
+
+                    genreAdapter.submitList(uiState.genres)
+
+                    if(uiState.errorMessage?.isNotEmpty() == true)
+                        Snackbar.make(binding.root, uiState.errorMessage, Snackbar.LENGTH_LONG).show()
                 }
             }
         }

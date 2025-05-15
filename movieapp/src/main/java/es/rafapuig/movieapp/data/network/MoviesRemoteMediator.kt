@@ -7,10 +7,9 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import es.rafapuig.movieapp.data.local.MoviesDatabase
-import es.rafapuig.movieapp.data.local.entity.MovieGenreCrossRef
-import es.rafapuig.movieapp.data.local.entity.MovieWithGenreDetails
+import es.rafapuig.movieapp.movies.data.local.entity.MovieGenreCrossRef
+import es.rafapuig.movieapp.movies.data.local.entity.MovieWithGenreDetails
 import es.rafapuig.movieapp.data.local.entity.RemoteKey
-import es.rafapuig.movieapp.data.mappers.toDatabase
 import es.rafapuig.movieapp.movies.data.mappers.toDatabase
 import es.rafapuig.movieapp.movies.data.network.api.MovieApiService
 import retrofit2.HttpException

@@ -1,7 +1,7 @@
 package es.rafapuig.movieapp.movies.data
 
 import androidx.paging.PagingData
-import es.rafapuig.movieapp.data.local.dao.MovieDao
+import es.rafapuig.movieapp.movies.data.local.dao.MovieDao
 import es.rafapuig.movieapp.movies.data.mappers.toDatabase
 import es.rafapuig.movieapp.movies.domain.MovieRepository
 import es.rafapuig.movieapp.movies.domain.model.Movie
@@ -9,9 +9,11 @@ import es.rafapuig.movieapp.movies.data.mappers.toDomain
 import es.rafapuig.movieapp.movies.data.network.api.MovieApiService
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlin.time.Duration.Companion.seconds
 
 class MovieRepositoryImpl(
     private val apiService: MovieApiService,
@@ -30,8 +32,9 @@ class MovieRepositoryImpl(
         }
     }
 
-    override fun fetchMoviesFlow(): Flow<List<Movie>> {
-        return flow {
+    override fun fetchMoviesFlow(): Flow<List<Movie>> =
+        flow {
+            delay(5.seconds)
             // Emitimos las peliculas que tenemos en cache primero
             val cachedMovies = movieDao.getNowPlayingMovies().map { it.toDomain() }
             emit(cachedMovies)
@@ -47,13 +50,12 @@ class MovieRepositoryImpl(
                 movieDao.insertAll(moviesResponse.results.map { it.toDatabase() })
             } while (page++ < totalPages)
 
-
             val updatedMovies = movieDao.getNowPlayingMovies().map { it.toDomain() }
             //emit(movieService.getMovies().TVShowListInfos.map { it.toDomain() })
             // Y volvemos a emitir
             emit(updatedMovies)
         }.flowOn(Dispatchers.IO)
-    }
+
 
     override fun fetchMoviesPagingFlow(): Flow<PagingData<Movie>> {
         TODO("Not yet implemented")

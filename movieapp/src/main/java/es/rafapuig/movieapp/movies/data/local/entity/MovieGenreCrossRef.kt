@@ -1,4 +1,4 @@
-package es.rafapuig.movieapp.data.local.entity
+package es.rafapuig.movieapp.movies.data.local.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

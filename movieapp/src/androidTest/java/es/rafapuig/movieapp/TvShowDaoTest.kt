@@ -7,7 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import es.rafapuig.movieapp.core.data.network.provider.TMDBNetworkProvider
 import es.rafapuig.movieapp.data.local.MoviesDatabase
 import es.rafapuig.movieapp.data.local.entity.TvShowEntity
-import es.rafapuig.movieapp.data.mappers.toDatabase
+import es.rafapuig.movieapp.movies.data.mappers.toDatabase
 import es.rafapuig.movieapp.trending.tvshows.data.api.TvShowsApiService
 import es.rafapuig.movieapp.trending.tvshows.data.model.TrendingTVShowsResponse
 import es.rafapuig.movieapp.trending.tvshows.data.network.TvShowsServiceProvider

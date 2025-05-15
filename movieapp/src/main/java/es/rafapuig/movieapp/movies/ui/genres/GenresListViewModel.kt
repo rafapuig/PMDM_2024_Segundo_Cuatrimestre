@@ -1,26 +1,27 @@
-package es.rafapuig.movieapp.movies.ui
+package es.rafapuig.movieapp.movies.ui.genres
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import es.rafapuig.movieapp.TheMovieDBApplication
+import es.rafapuig.movieapp.core.ui.util.getApplication
 import es.rafapuig.movieapp.movies.domain.GenreRepository
-import es.rafapuig.movieapp.movies.domain.MockGenreRepository
 import es.rafapuig.movieapp.movies.domain.model.Genre
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 class GenresListViewModel(val repository: GenreRepository) : ViewModel() {
 
     data class UiState(
-        val isLoading: Boolean = true,
+        val isLoading: Boolean = false,
         val genres: List<Genre> = emptyList(),
         val errorMessage: String? = null
     )
@@ -38,6 +39,8 @@ class GenresListViewModel(val repository: GenreRepository) : ViewModel() {
 
             try {
                 val genres = repository.fetchAllGenres()
+                delay(2.seconds)
+                Log.i("GenresListViewModel", "Genres: $genres")
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -58,8 +61,7 @@ class GenresListViewModel(val repository: GenreRepository) : ViewModel() {
     companion object {
         val Factory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as TheMovieDBApplication)
-                GenresListViewModel(application.genreRepository)
+                GenresListViewModel(getApplication().genreRepository)
             }
         }
     }

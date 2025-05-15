@@ -5,11 +5,12 @@ import es.rafapuig.movieapp.movies.data.MovieRepositoryPagedImpl
 import es.rafapuig.movieapp.trending.tvshows.data.TVShowRepositoryImpl
 import es.rafapuig.movieapp.data.local.provider.MovieDatabaseProvider
 import es.rafapuig.movieapp.core.data.network.provider.TMDBNetworkProvider
+import es.rafapuig.movieapp.movies.data.GenreRepositoryImpl
 import es.rafapuig.movieapp.movies.data.MovieRepositoryImpl
 import es.rafapuig.movieapp.movies.domain.MovieRepository
 import es.rafapuig.movieapp.movies.data.network.provider.MovieServiceProvider
 import es.rafapuig.movieapp.movies.domain.GenreRepository
-import es.rafapuig.movieapp.movies.domain.MockGenreRepository
+import es.rafapuig.movieapp.movies.domain.GenreMockRepository
 import es.rafapuig.movieapp.trending.tvshows.domain.TvShowRepository
 import es.rafapuig.movieapp.trending.tvshows.data.network.TvShowsServiceProvider
 
@@ -40,6 +41,6 @@ class TheMovieDBApplication : Application() {
 
         tvShowRepository = TVShowRepositoryImpl(tvShowsApiService)
 
-        genreRepository = MockGenreRepository()
+        genreRepository = GenreRepositoryImpl(db.genreDao)
     }
 }

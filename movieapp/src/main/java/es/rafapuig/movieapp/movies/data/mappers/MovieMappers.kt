@@ -1,7 +1,7 @@
 package es.rafapuig.movieapp.movies.data.mappers
 
-import es.rafapuig.movieapp.data.local.entity.MovieEntity
-import es.rafapuig.movieapp.data.local.entity.MovieWithGenreDetails
+import es.rafapuig.movieapp.movies.data.local.entity.MovieEntity
+import es.rafapuig.movieapp.movies.data.local.entity.MovieWithGenreDetails
 import es.rafapuig.movieapp.movies.data.network.model.MovieResponse
 import es.rafapuig.movieapp.movies.domain.model.Movie
 

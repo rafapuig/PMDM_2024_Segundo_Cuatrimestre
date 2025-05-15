@@ -45,10 +45,18 @@ class NowPlayingMoviesDirectlyFromApiViewModel(
                 val movies = repository.fetchMovies()
                 delay(2000)
                 //Dentro de la corrutina se debe usar postValue
-                _state.postValue(state.value?.copy(isLoading = false, moviesList = movies))
+                _state.postValue(
+                    state.value?.copy(
+                        isLoading = false,
+                        moviesList = movies
+                    )
+                )
             } catch (ex: Exception) {
                 _state.postValue(
-                    state.value?.copy(isLoading = false, error = "${ex.message}")
+                    state.value?.copy(
+                        isLoading = false,
+                        error = "${ex.message}"
+                    )
                 )
             }
         }

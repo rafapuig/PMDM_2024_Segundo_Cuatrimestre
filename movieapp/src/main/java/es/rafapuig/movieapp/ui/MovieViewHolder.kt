@@ -38,5 +38,4 @@ class MovieViewHolder(private val binding: ViewMovieItemBinding) : ViewHolder(bi
 
     }
 
-
 }

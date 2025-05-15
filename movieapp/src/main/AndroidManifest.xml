@@ -13,8 +13,8 @@
         android:theme="@style/Theme.PMDM_2024_Segundo_Cuatrimestre">
 
         <activity
-            android:name=".movies.ui.GenresListActivity"
-            android:exported="false" />
+            android:name=".movies.ui.genres.GenresListActivity"
+            android:exported="true" />
 
         <activity
             android:name=".ui.ejemplo.EjemploActivity"

@@ -2,7 +2,7 @@ package es.rafapuig.movieapp.movies.domain
 
 import es.rafapuig.movieapp.movies.domain.model.Genre
 
-class MockGenreRepository : GenreRepository {
+class GenreMockRepository : GenreRepository {
 
     override suspend fun fetchAllGenres(): List<Genre> =
         listOf(

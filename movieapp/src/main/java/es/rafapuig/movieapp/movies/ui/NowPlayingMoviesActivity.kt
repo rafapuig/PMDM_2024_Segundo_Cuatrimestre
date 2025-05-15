@@ -56,7 +56,9 @@ class NowPlayingMoviesActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest{ uiState ->
+
                     binding.progressBar.isVisible = false
+
                     when(uiState) {
                         NowPlayingMoviesUiState.Empty -> Unit
 

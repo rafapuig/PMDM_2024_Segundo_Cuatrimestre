@@ -1,10 +1,9 @@
-package es.rafapuig.movieapp.data.local.dao
+package es.rafapuig.movieapp.movies.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Upsert
-import es.rafapuig.movieapp.data.local.entity.GenreEntity
+import es.rafapuig.movieapp.movies.data.local.entity.GenreEntity
 
 @Dao
 interface GenreDao {

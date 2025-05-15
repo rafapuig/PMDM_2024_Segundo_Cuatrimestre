@@ -17,3 +17,6 @@ fun CreationExtras.getTvShowsRepository(): TvShowRepository {
     return application.tvShowRepository
 }
 
+fun CreationExtras.getApplication(): TheMovieDBApplication  =
+    this[APPLICATION_KEY] as TheMovieDBApplication
+
