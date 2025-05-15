@@ -11,6 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PMDM_2024_Segundo_Cuatrimestre">
+
+        <activity
+            android:name=".movies.ui.GenresListActivity"
+            android:exported="false" />
+
         <activity
             android:name=".ui.ejemplo.EjemploActivity"
             android:exported="true">
@@ -20,9 +25,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".trending.tvshows.ui.views.TrendingTvShowsActivity"
             android:exported="false" />
+
         <activity
             android:name=".movies.ui.NowPlayingMoviesDirectlyFromApiActivity"
             android:exported="true" />

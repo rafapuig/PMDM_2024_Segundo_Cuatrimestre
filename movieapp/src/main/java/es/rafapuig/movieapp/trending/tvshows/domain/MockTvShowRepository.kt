@@ -6,7 +6,7 @@ class MockTvShowRepository : TvShowRepository {
 
     override suspend fun fetchTrendingTVShows(): List<TVShow> {
         return listOf(
-            TVShow(id = 1),
+            TVShow(id = 1, name = "TV Show 1"),
             TVShow(id = 2)
         )
     }

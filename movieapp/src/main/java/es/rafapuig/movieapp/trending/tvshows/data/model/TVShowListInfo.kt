@@ -2,6 +2,7 @@ package es.rafapuig.movieapp.trending.tvshows.data.model
 
 
 import com.squareup.moshi.Json
+import es.rafapuig.movieapp.trending.tvshows.domain.model.TVShow
 
 data class TVShowListInfo(
     @Json(name = "id") val id: Int = 0,
