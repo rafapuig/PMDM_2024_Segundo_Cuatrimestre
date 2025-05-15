@@ -22,8 +22,9 @@ class EjemploViewModel: ViewModel() {
             withContext(Dispatchers.IO) {
                 delay(1000)
             }
-            _uiState.update { it.copy(contador = it.contador + 1) }
-            _uiState.update { it.copy(isCalculando = false) }
+            _uiState.update { it.copy(
+                contador = it.contador + 1,
+                isCalculando = false) }
         }
     }
 

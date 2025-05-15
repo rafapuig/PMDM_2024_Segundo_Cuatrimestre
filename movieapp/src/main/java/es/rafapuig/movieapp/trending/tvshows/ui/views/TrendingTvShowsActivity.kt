@@ -18,7 +18,7 @@ class TrendingTvShowsActivity : AppCompatActivity() {
 
     val binding by lazy { ActivityTrendingTvShowsBinding.inflate(layoutInflater) }
 
-    val viewModel : TrendingTvShowsViewModel by viewModels()
+    val viewModel: TrendingTvShowsViewModel by viewModels { TrendingTvShowsViewModel.Factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
