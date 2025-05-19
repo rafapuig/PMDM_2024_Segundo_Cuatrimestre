@@ -14,10 +14,10 @@ class GenreListAdapter(
     companion object {
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Genre>() {
             override fun areItemsTheSame(oldItem: Genre, newItem: Genre) =
-                oldItem == newItem
+                oldItem.id == newItem.id
 
             override fun areContentsTheSame(oldItem: Genre, newItem: Genre) =
-                oldItem.id == newItem.id
+                oldItem == newItem
         }
     }
 
@@ -33,6 +33,8 @@ class GenreListAdapter(
         }
 
     override fun onBindViewHolder(holder: GenreViewHolder, position: Int) =
-        holder.bindTo(getItem(position))
+        getItem(position).let { genre ->
+            holder.bindTo(genre)
+        }
 
 }

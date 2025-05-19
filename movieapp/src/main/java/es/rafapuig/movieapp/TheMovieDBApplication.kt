@@ -41,6 +41,6 @@ class TheMovieDBApplication : Application() {
 
         tvShowRepository = TVShowRepositoryImpl(tvShowsApiService)
 
-        genreRepository = GenreRepositoryImpl(db.genreDao)
+        genreRepository = GenreMockRepository() // GenreRepositoryImpl(db.genreDao)
     }
 }

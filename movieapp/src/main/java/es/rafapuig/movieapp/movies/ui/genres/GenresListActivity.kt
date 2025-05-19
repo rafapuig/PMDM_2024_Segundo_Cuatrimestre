@@ -18,11 +18,18 @@ import kotlinx.coroutines.launch
 
 class GenresListActivity : AppCompatActivity() {
 
-    val binding: ActivityGenresListBinding by lazy { ActivityGenresListBinding.inflate(layoutInflater) }
+    val binding: ActivityGenresListBinding by lazy {
+        ActivityGenresListBinding.inflate(
+            layoutInflater
+        )
+    }
 
     val viewModel: GenresListViewModel by viewModels { GenresListViewModel.Factory }
 
-    val genreAdapter by lazy { GenreListAdapter { onGenreItemClick(it) } }
+    val genreAdapter by lazy {
+        GenreListAdapter { onGenreItemClick(it) }
+    }
+
 
     fun onGenreItemClick(genre: Genre) {
         Snackbar
@@ -56,8 +63,9 @@ class GenresListActivity : AppCompatActivity() {
 
                     genreAdapter.submitList(uiState.genres)
 
-                    if(uiState.errorMessage?.isNotEmpty() == true)
-                        Snackbar.make(binding.root, uiState.errorMessage, Snackbar.LENGTH_LONG).show()
+                    if (uiState.errorMessage?.isNotEmpty() == true)
+                        Snackbar.make(binding.root, uiState.errorMessage, Snackbar.LENGTH_LONG)
+                            .show()
                 }
             }
         }
